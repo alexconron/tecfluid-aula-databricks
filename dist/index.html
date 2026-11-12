@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Carta Gantt, programa y materiales del curso de ingesta en Databricks para Tecfluid.">
+  <title>Curso de Databricks · Tecfluid</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="wrap">
+    <p class="brand">Tecfluid <span>· Backspace by Apiux</span></p>
+    <h1>Curso de Databricks</h1>
+    <p>Ingesta de datos desde cero · 8 clases · 16 horas</p>
+    <nav aria-label="En esta página"><a href="#cronograma">Carta Gantt</a><a href="#programa">Qué veremos</a><a href="#materiales">Materiales</a></nav>
+  </header>
+  <main class="wrap">
+    <section id="cronograma" aria-labelledby="titulo-gantt">
+      <h2 id="titulo-gantt">Carta Gantt</h2>
+      <p><strong>Martes y viernes, de 11:00 a 13:00</strong> (hora de Santiago).</p>
+      <div class="table-scroll" role="region" aria-label="Carta Gantt por semana" tabindex="0">
+        <table>
+          <thead><tr><th scope="col">Clase</th><th scope="col">16–22 nov.</th><th scope="col">23–29 nov.</th><th scope="col">30 nov.–6 dic.</th><th scope="col">7–13 dic.</th><th scope="col">14–20 dic.</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><a href="#clase-1">1. Primera carga</a></th><td><span class="bar agreed">Mar 17</span></td><td></td><td></td><td></td><td></td></tr>
+            <tr><th scope="row"><a href="#clase-2">2. Preparar datos</a></th><td><span class="bar agreed">Vie 20</span></td><td></td><td></td><td></td><td></td></tr>
+            <tr><th scope="row"><a href="#clase-3">3. Configuración YAML</a></th><td></td><td><span class="bar">Mar 24</span></td><td></td><td></td><td></td></tr>
+            <tr><th scope="row"><a href="#clase-4">4. Carga piloto</a></th><td></td><td><span class="bar">Vie 27</span></td><td></td><td></td><td></td></tr>
+            <tr><th scope="row"><a href="#clase-5">5. Actualizar y reprocesar</a></th><td></td><td></td><td><span class="bar">Mar 1</span></td><td></td><td></td></tr>
+            <tr><th scope="row"><a href="#clase-6">6. Errores e IA</a></th><td></td><td></td><td><span class="bar">Vie 4</span></td><td></td><td></td></tr>
+            <tr><th scope="row"><a href="#clase-7">7. Segunda fuente</a></th><td></td><td></td><td></td><td><span class="bar">Vie 11</span></td><td></td></tr>
+            <tr><th scope="row"><a href="#clase-8">8. Práctica final</a></th><td></td><td></td><td></td><td></td><td><span class="bar">Mar 15</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted">El 17 y el 20 de noviembre se acordaron en la reunión. Las fechas siguientes siguen el horario acordado y quedan sujetas a ajustes. Se omite el 8 de diciembre por <a href="https://www.gob.cl/noticias/feriados-2026-revisa-cuantos-habra-y-cuales-son-irrenunciables/">feriado en Chile</a>.</p>
+    </section>
+    <section id="programa">
+      <h2>Qué veremos</h2>
+      <ol class="lessons">
+        <li id="clase-1"><h3>Primera carga de un CSV</h3><p>Subiremos un archivo de ejemplo, ejecutaremos una carga guiada y revisaremos que la tabla tenga las filas esperadas.</p></li>
+        <li id="clase-2"><h3>Preparar los datos</h3><p>Revisaremos formatos, campos obligatorios, valores vacíos y duplicados. Elegiremos una muestra autorizada de Tecfluid para practicar.</p></li>
+        <li id="clase-3"><h3>Configurar con YAML</h3><p>Editaremos una plantilla para indicar el origen, el formato y el destino. Practicaremos cómo corregir errores de indentación y campos inválidos.</p></li>
+        <li id="clase-4"><h3>Ejecutar la carga piloto</h3><p>Comprobaremos rutas y permisos, ejecutaremos la carga y compararemos los datos de origen con la tabla de destino.</p></li>
+        <li id="clase-5"><h3>Actualizar y repetir una carga</h3><p>Procesaremos una segunda entrega y veremos qué ocurre al repetir una ejecución. Revisaremos cómo evitar filas duplicadas o reemplazos accidentales.</p></li>
+        <li id="clase-6"><h3>Resolver errores con apoyo de IA</h3><p>Diagnosticaremos errores de rutas, archivos y YAML. En una práctica breve, le pediremos a un agente de IA que explique un error de ejemplo y comprobaremos su sugerencia en el historial de ejecución.</p></li>
+        <li id="clase-7"><h3>Configurar una segunda fuente</h3><p>Adaptaremos la plantilla a otro conjunto de datos compatible, ejecutaremos la carga y validaremos el resultado.</p></li>
+        <li id="clase-8"><h3>Práctica final</h3><p>Cada participante completará el proceso de carga y validación con una guía de consulta. Revisaremos dudas y cuándo escalar un problema.</p></li>
+      </ol>
+    </section>
+    <section id="materiales">
+      <h2>Materiales</h2>
+      <ul class="downloads">
+        <li><a href="materiales/ordenes_trabajo.csv" download>CSV de práctica de la clase 1</a></li>
+        <li><a href="materiales/Clase_1_Carga_CSV.py" download>Notebook de la clase 1</a></li>
+        <li><a href="materiales/Apuntes.md" download>Apuntes y ejercicio de la clase 1</a></li>
+        <li><a href="ejemplo-carga.yaml" download>Ejemplo de configuración YAML</a></li>
+      </ul>
+    </section>
+  </main>
+  <footer class="wrap">Material de apoyo para Tecfluid</footer>
+</body>
+</html>

@@ -1,0 +1,15 @@
+# Ejemplo ilustrativo. Campos sujetos a la implementacion del curso.
+nombre: productos_tecfluid
+origen:
+  ruta: /ruta/autorizada/productos/
+  formato: csv
+  separador: ";"
+  encabezado: true
+destino:
+  catalogo: capacitacion
+  esquema: practica
+  tabla: productos
+validaciones:
+  campos_obligatorios:
+    - codigo_producto
+    - descripcion
