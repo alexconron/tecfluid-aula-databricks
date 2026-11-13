@@ -36,11 +36,38 @@ tbody tr:last-child > * { border-bottom: 0; }
 .bar { display: block; white-space: nowrap; border-radius: .3rem; padding: .16rem .35rem; background: var(--lavender); color: #3e1b78; font-weight: 700; }
 .bar.agreed { background: var(--yellow); color: var(--ink); }
 .muted, footer { color: var(--muted); font-size: .875rem; }
-.lessons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; margin: .85rem 0 0; padding-left: 1.4rem; }
-.lessons li { margin-left: .45rem; padding: .7rem .8rem; background: #fff; border: 1px solid var(--line); border-radius: .45rem; scroll-margin-top: 1rem; }
-.lessons li::marker { color: var(--violet); font-weight: 750; }
-.lessons p { margin: .2rem 0 0; color: var(--muted); }
-.lessons li:target { background: var(--lavender); }
+.lessons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1.15rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.lessons li {
+  min-width: 0;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: .85rem;
+  box-shadow: 0 3px 10px #25193d08;
+  scroll-margin-top: 1rem;
+}
+.lesson-number {
+  display: inline-block;
+  margin-bottom: .7rem;
+  padding: .2rem .6rem;
+  border-radius: .35rem;
+  background: var(--lavender);
+  color: var(--violet);
+  font-size: .8rem;
+  font-weight: 750;
+}
+.lessons h3 { font-size: 1.17rem; line-height: 1.25; }
+.lessons p { margin: .45rem 0 0; color: var(--muted); max-width: 55ch; }
+.lessons li:target { border-color: var(--violet); outline: 2px solid var(--violet); outline-offset: 2px; }
+.lessons li:target .lesson-number { background: var(--yellow); color: var(--ink); }
+@media print { .lessons li { break-inside: avoid; box-shadow: none; } }
 .downloads { padding-left: 1.35rem; }
 footer { padding-block: 1.1rem; }
 @media (max-width: 620px) {
