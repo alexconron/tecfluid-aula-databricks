@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Clase 1 del curso de Databricks para Tecfluid. Recorrido por el entorno, opciones de ingesta y práctica con un CSV de órdenes de trabajo.">
+  <title>Clase 1 · Entorno e ingesta en Databricks</title>
+  <link rel="stylesheet" href="style.css?v=2">
+  <style>
+    .agenda { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; padding: 0; list-style: none; }
+    .agenda strong { color: var(--violet); }
+    .lesson dt { margin-top: .7rem; font-weight: 750; }
+    .lesson dd { margin: .15rem 0 .65rem; }
+    .lesson li + li { margin-top: .4rem; }
+    .lesson code { overflow-wrap: anywhere; }
+    .lesson details { margin-block: 1rem .4rem; padding: .85rem 1rem; background: var(--lavender); border-radius: .45rem; }
+    .lesson summary { font-weight: 750; cursor: pointer; }
+    .lesson section { scroll-margin-top: 1rem; }
+    .lesson section > p, .lesson dd { max-width: 75ch; }
+    .lesson output { display: block; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <p class="brand">Tecfluid <span>· Curso de Databricks</span></p>
+      <h1>Clase 1 · Entorno e ingesta en Databricks</h1>
+      <p>Dos horas de recorrido y práctica con un CSV de órdenes de trabajo.</p>
+      <nav aria-label="Navegación de la clase">
+        <a href="index.html#programa">Volver al curso</a><a href="#entorno">Entorno</a><a href="#opciones">Opciones de carga</a><a href="#demo">Demo con job</a><a href="#practica">Práctica</a><a href="#materiales">Materiales</a>
+      </nav>
+    </div>
+  </header>
+  <main class="wrap lesson">
+    <section aria-labelledby="plan">
+      <h2 id="plan">Plan de la sesión</h2>
+      <ul class="agenda">
+        <li><strong>0–30 min</strong> Apertura y entorno</li>
+        <li><strong>30–55 min</strong> Opciones y primera demo</li>
+        <li><strong>55–65 min</strong> Pausa</li>
+        <li><strong>65–95 min</strong> Carga con job</li>
+        <li><strong>95–120 min</strong> Práctica y cierre</li>
+      </ul>
+      <p>¿Qué archivo reciben seguido y qué necesitan hacer con sus datos cuando llega?</p>
+    </section>
+    <section id="entorno" aria-labelledby="titulo-entorno">
+      <h2 id="titulo-entorno">Recorrido por el entorno</h2>
+      <dl>
+        <dt>Workspace</dt><dd>Ubicamos el notebook que contiene las instrucciones de carga.</dd>
+        <dt>Catalog</dt><dd>Entramos al catálogo y al esquema de práctica. Abrimos el volumen que guarda el archivo y la tabla donde consultaremos las filas.</dd>
+        <dt>Compute</dt><dd>Ubicamos el cómputo que ejecutará el notebook.</dd>
+        <dt>Jobs &amp; Pipelines</dt><dd>Abrimos un job y buscamos el estado y el detalle de una ejecución.</dd>
+      </dl>
+    </section>
+    <section id="opciones" aria-labelledby="titulo-opciones">
+      <h2 id="titulo-opciones">Opciones nativas de carga</h2>
+      <dl>
+        <dt>Add data</dt><dd>Crear una tabla desde un archivo local usando la interfaz.</dd>
+        <dt>Notebook con SQL o PySpark</dt><dd>Leer un archivo y controlar sus transformaciones y la escritura con código.</dd>
+        <dt><code>COPY INTO</code></dt><dd>Cargar archivos por lotes a una tabla Delta. Por defecto omite archivos que esa tabla ya cargó mediante el comando.</dd>
+        <dt>Auto Loader</dt><dd>Detectar y procesar de forma incremental los archivos que van llegando a una ubicación.</dd>
+        <dt>Lakeflow Connect</dt><dd>Ingerir desde una aplicación, base de datos u otro origen compatible mediante un conector administrado.</dd>
+      </dl>
+      <h3>Demo 1 · Crear una tabla con Add data</h3>
+      <ol>
+        <li>Selecciona <a href="materiales/ordenes_trabajo.csv" download>ordenes_trabajo.csv</a> y revisa el encabezado y la vista previa.</li>
+        <li>Crea <code>ordenes_ui_demo</code> en el esquema de práctica.</li>
+        <li>Abre la tabla en Catalog y busca las columnas <code>orden_id</code>, <code>fecha</code>, <code>equipo</code> y <code>estado</code>.</li>
+      </ol>
+      <p><a href="https://docs.databricks.com/aws/en/ingestion/overview">Opciones de ingesta en Databricks</a> · <a href="https://docs.databricks.com/aws/en/ingestion/cloud-object-storage">Ingesta de archivos con COPY INTO y Auto Loader</a></p>
+    </section>
+    <section id="demo" aria-labelledby="titulo-demo">
+      <h2 id="titulo-demo">Demo 2 · Cargar el mismo CSV con un job</h2>
+      <ol>
+        <li>Sube el CSV al volumen de práctica y copia su ruta.</li>
+        <li>Abre el <a href="materiales/Clase_1_Carga_CSV.py" download>notebook de la clase</a>. Completa la ruta y el esquema, lee el archivo y revisa la vista previa.</li>
+        <li>Escribe los datos en <code>tecfluid_clase_1_ordenes_demo</code>. El notebook reemplaza esa tabla de práctica al volver a ejecutarse.</li>
+        <li>Crea un job de una tarea que ejecute el notebook. Lánzalo y abre el detalle de esa ejecución.</li>
+        <li>Abre la tabla en Catalog. Comprueba que contiene 10 órdenes y que OT-1007 tiene equipo BOM-04 y estado Pendiente.</li>
+      </ol>
+    </section>
+    <section id="practica" aria-labelledby="titulo-practica">
+      <h2 id="titulo-practica">Práctica por turnos</h2>
+      <p>Cada persona comparte pantalla y ubica el CSV, la ejecución del job y la tabla.</p>
+      <ol>
+        <li><strong>Primer turno.</strong> Compara el conteo de filas de la tabla con el CSV.</li>
+        <li><strong>Segundo turno.</strong> Busca OT-1007 en la tabla y verifica su equipo y estado con el CSV.</li>
+      </ol>
+      <details>
+        <summary>Caso para discutir o practicar sin acceso</summary>
+        <p>La ejecución figura como correcta. La tabla tiene 9 filas, y OT-1007 aparece con equipo BOM-04 y estado Pendiente.</p>
+        <p>¿Qué comprobación coincide con el archivo? ¿Qué información pedirían para encontrar la orden que falta?</p>
+        <details><summary>Ver respuesta</summary><p>El equipo y estado de OT-1007 coinciden. Para encontrar la orden que falta, compara los valores de <code>orden_id</code> de la tabla con los del CSV.</p></details>
+      </details>
+      <p><strong>Cierre.</strong> «El archivo salió de ___, los datos quedaron en ___ y comprobé ___».</p>
+    </section>
+    <section id="materiales" aria-labelledby="titulo-materiales">
+      <h2 id="titulo-materiales">Materiales</h2>
+      <ul class="downloads">
+        <li><a href="materiales/ordenes_trabajo.csv" download>CSV de órdenes de trabajo</a></li>
+        <li><a href="materiales/Clase_1_Carga_CSV.py" download>Notebook de Databricks</a></li>
+        <li><a href="materiales/Apuntes.md" download>Apuntes y ejercicio</a></li>
+      </ul>
+    </section>
+  </main>
+  <footer class="wrap"><a href="index.html#programa">Volver al programa del curso</a></footer>
+</body>
+</html>
