@@ -104,6 +104,11 @@
     #inicio .lede,#inicio .sequence,#inicio .sequence span + span::before { color:#5423a5; }
     .art,.sample { box-shadow:none; }
   }
+  .practice-downloads { display:flex; flex-wrap:wrap; gap:.35rem 1.25rem; padding-left:1.25rem; }
+  .practice-downloads li + li { margin-top:0; }
+  .practice-code figcaption { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.4rem; }
+  .practice-code pre { max-height:55vh; }
+  #copy-feedback { display:block; font-size:.82em; color:#e2d5f9; }
 </style>
 </head>
 <body>
@@ -176,8 +181,50 @@ FROM STREAM read_files(
 <div class="slide-layout"><div class="slide-copy"><div class="sequence"><span>Volumen</span><span>Notebook</span><span>Tabla Delta</span></div><ol><li>Sube el CSV al volumen de práctica y copia la ruta.</li><li>Completa la ruta y el esquema en el <a href="materiales/Clase_1_Carga_CSV.py" download>notebook</a>. Revisa la vista previa.</li><li>Ejecuta el notebook como tarea de un job y abre el detalle de la ejecución.</li><li>Abre <code>tecfluid_clase_1_ordenes_demo</code> en Catalog. El notebook reemplaza esa tabla de práctica al repetir la ejecución.</li></ol></div><figure class="art"><a href="https://docs.databricks.com/aws/en/assets/images/example-job-overview-3afc40004602e65c871bd67edfa87f9b.png" target="_blank" rel="noopener" aria-label="Ampliar imagen de vista de un job con cuatro tareas y un disparador diario"><img src="https://docs.databricks.com/aws/en/assets/images/example-job-overview-3afc40004602e65c871bd67edfa87f9b.png" alt="vista de un job con cuatro tareas y un disparador diario" decoding="async" referrerpolicy="no-referrer"></a><figcaption>Ejemplo de un job en la interfaz · <a href="https://docs.databricks.com/aws/en/jobs/" target="_blank" rel="noopener">Databricks</a></figcaption></figure></div>
 </section>
 <section class="slide" id="practica" aria-labelledby="heading-10">
-  <h2 id="heading-10" tabindex="-1">Validación por turnos</h2>
-  <p>Cada persona ubica el CSV, el historial del job y la tabla de destino.</p><dl><div><dt>Primer turno</dt><dd>Compara cuántas órdenes hay en el CSV y en la tabla.</dd></div><div><dt>Segundo turno</dt><dd>Busca OT-1007. Compara su equipo y estado con el CSV.</dd></div></dl><details><summary>Caso para discutir si falla el acceso</summary><p>El job figura como correcto, pero la tabla tiene 9 filas. OT-1007 aparece con equipo BOM-04 y estado Pendiente.</p><p>¿Qué comprobación coincide? ¿Qué compararías para encontrar la orden que falta?</p></details><details><summary>Ver resultados de referencia</summary><p>Hay 10 órdenes en el CSV. OT-1007 tiene equipo BOM-04 y estado Pendiente. Si hay una diferencia de conteo, compara los valores de <code>orden_id</code>.</p></details>
+  <h2 id="heading-10" tabindex="-1">Práctica individual · Carga tu CSV</h2>
+  <div class="slide-layout">
+    <div class="slide-copy">
+      <p>Descarga tu archivo de órdenes ficticias.</p>
+      <ul class="practice-downloads">
+        <li><a href="materiales/ordenes_trabajo_sebastian.csv" download>CSV de Sebastián</a></li>
+        <li><a href="materiales/ordenes_trabajo_nelson.csv" download>CSV de Nelson</a></li>
+      </ul>
+      <ol>
+        <li>Abre el CSV, cuenta las órdenes y elige una para comprobar.</li>
+        <li>Sube tu archivo al volumen y copia su ruta desde Catalog.</li>
+        <li>Pega el código en un notebook de Python. Completa la ruta y elige un nombre propio para tu tabla de práctica.</li>
+        <li>Ejecuta el notebook. Abre tu tabla en Catalog y comprueba el conteo, el equipo y el estado de la orden que elegiste.</li>
+      </ol>
+      <p>Al compartir pantalla, muestra el archivo de origen, la tabla y la evidencia de tu comprobación.</p>
+      <details><summary>Caso para discutir si falla el acceso</summary><p>El job figura como correcto, pero la tabla tiene 9 filas y el CSV tiene 10. ¿Qué compararías para encontrar la orden que falta?</p></details>
+    </div>
+    <figure class="code practice-code">
+      <figcaption>Python · plantilla de práctica <button id="copy-practice" type="button" hidden>Copiar código</button></figcaption>
+      <pre tabindex="0"><code id="practice-python"># Completa con la ruta exacta del CSV que subiste al volumen.
+ruta_csv = "/Volumes/&lt;catalogo&gt;/&lt;esquema&gt;/&lt;volumen&gt;/&lt;archivo&gt;.csv"
+
+# Elige un nombre propio dentro del esquema de práctica.
+tabla_destino = "&lt;catalogo&gt;.&lt;esquema&gt;.&lt;tu_tabla_de_practica&gt;"
+
+if "&lt;" in ruta_csv or "&lt;" in tabla_destino:
+    raise ValueError("Completa la ruta del CSV y el nombre de tu tabla.")
+
+ordenes = (
+    spark.read
+    .option("header", True)
+    .option("mode", "FAILFAST")
+    .csv(ruta_csv)
+)
+
+display(ordenes)
+
+# Crea una tabla nueva. Si existe, elige otro nombre para tu práctica.
+ordenes.write.format("delta").mode("errorifexists").saveAsTable(tabla_destino)
+
+# Agrega tu comprobación aquí: compara el conteo y busca una orden del CSV.</code></pre>
+      <output id="copy-feedback" aria-live="polite"></output>
+    </figure>
+  </div>
 </section>
 <section class="slide" id="cierre" aria-labelledby="heading-11">
   <h2 id="heading-11" tabindex="-1">Origen, destino y comprobación</h2>
@@ -254,6 +301,24 @@ FROM STREAM read_files(
   document.getElementById("jump-label").hidden = false;
   document.getElementById("controls").hidden = false;
   showFromHash();
+
+  const copyPractice = document.getElementById("copy-practice");
+  const practicePython = document.getElementById("practice-python");
+  const copyFeedback = document.getElementById("copy-feedback");
+  copyPractice.hidden = false;
+  copyPractice.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(practicePython.textContent);
+      copyFeedback.value = "Código copiado.";
+    } catch {
+      const selection = window.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents(practicePython);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      copyFeedback.value = "Código seleccionado. Presiona Ctrl+C o ⌘C.";
+    }
+  });
 </script>
 </body>
 </html>
