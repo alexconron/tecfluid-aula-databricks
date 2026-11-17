@@ -49,6 +49,61 @@
     .code { color:#17131f; background:#f0e8ff; }
     figcaption { color:#554b63; }
   }
+  body { background:#f7f5fb; font-family:Inter,system-ui,sans-serif; }
+  header { background:#191425; border-bottom:3px solid #e8ca55; }
+  header .wrap.toolbar { width:min(100% - 2.5rem, 82rem); padding-block:.7rem; }
+  .toolbar a { font-weight:700; text-decoration:none; }
+  .toolbar a:hover { text-decoration:underline; }
+  #deck { width:min(100% - 2.5rem, 82rem); }
+  .slide { padding:clamp(1.25rem,4vh,3.1rem) 0; }
+  .slide h2 { font-size:clamp(2rem,4.25vw,3.45rem); max-width:34ch; margin-bottom:.56em; }
+  .slide h1 { font-size:clamp(2.65rem,6.4vw,5.4rem); max-width:22ch; }
+  .slide-layout { display:grid; grid-template-columns:minmax(0,1.26fr) minmax(0,1fr); align-items:center; gap:clamp(1.25rem,4vw,3.4rem); }
+  .slide-copy { min-width:0; }
+  .slide-copy > :first-child { margin-top:0; }
+  #inicio { background:radial-gradient(ellipse at 96% 5%, #483366, transparent 65%),#221830; color:#faf5ff; margin-block:1rem; border-radius:1rem; padding:clamp(1.4rem,5vw,4rem); }
+  #inicio .lede,#inicio .sequence,#inicio .sequence span + span::before { color:#f7d96d; }
+  #inicio .slide-layout { grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+  .art,.sample { margin:0; border:1px solid #e3daee; border-radius:.7rem; overflow:hidden; background:#fff; box-shadow:0 .45rem 1.5rem #2a194417; }
+  .art > a { display:block; }
+  .art img { display:block; width:100%; max-height:35vh; object-fit:contain; color:#34274a; }
+  .art a:focus-visible { outline-offset:-4px; }
+  .art figcaption,.sample figcaption { color:#48395c; background:#f0ebf7; padding:.65rem .85rem; font-size:.78em; }
+  .sample div { overflow:auto; }
+  .sample table { min-width:23rem; font-size:.78em; }
+  .sample td,.sample th { padding:.55rem .68rem; text-align:left; white-space:nowrap; }
+  .sample td { border-left:0; }
+  .flow { background:#efe9f8; border-left:4px solid #7643c1; padding:1rem 1.15rem; border-radius:0 .65rem .65rem 0; }
+  .flow h3 { font-size:1.05em; }
+  .flow ol { padding-left:1.35em; }
+  .flow li { padding-left:.16em; }
+  .flow li::marker { color:#6230a4; font-weight:800; }
+  .flow li span { display:block; font-size:.88em; color:#4c3c60; }
+  .flow p { margin-bottom:0; font-size:.83em; }
+  .slide dl div { grid-template-columns:minmax(0,1fr) minmax(0,1.6fr); }
+  #lakeflow dl div { display:block; padding-bottom:.65rem; }
+  #lakeflow dd { font-size:.91em; margin-top:.16rem; }
+  .code { background:#211830; }
+  .code pre { font-size:clamp(.77rem,1.39vw,1.04rem); }
+  footer.controls { position:sticky; bottom:0; z-index:2; width:100%; background:#f7f5fb; padding-inline:max(1.25rem,calc((100% - 82rem)/2)); }
+  .progress-track { height:5px; border-radius:5px; overflow:hidden; background:#e4daf0; flex:1 1 3rem; min-width:2rem; }
+  #deck-progress { background:#7546bc; height:100%; width:0; }
+  @media(max-width:790px) {
+    .slide-layout,#inicio .slide-layout { grid-template-columns:minmax(0,1fr); }
+    .art img { max-height:45vh; }
+    .slide dl div { grid-template-columns:minmax(0,1fr); }
+  }
+  @media(max-width:510px) {
+    .controls { gap:.4rem; }
+    .controls button { padding-inline:.5rem; font-size:.85rem; }
+    #counter { min-width:2.75rem; }
+    .progress-track { flex-basis:100%; }
+  }
+  @media print {
+    #inicio { background:white; color:#191425; margin:0; padding:1rem 0; }
+    #inicio .lede,#inicio .sequence,#inicio .sequence span + span::before { color:#5423a5; }
+    .art,.sample { box-shadow:none; }
+  }
 </style>
 </head>
 <body>
@@ -57,8 +112,8 @@
   <label id="jump-label" hidden>Ir a <select id="jump"><option value="0">1. Inicio</option><option value="1">2. Agenda</option><option value="2">3. Entorno</option><option value="3">4. Add data</option><option value="4">5. COPY INTO</option><option value="5">6. Auto Loader</option><option value="6">7. Lakeflow</option><option value="7">8. Pipeline SQL</option><option value="8">9. Comparación</option><option value="9">10. Demo con job</option><option value="10">11. Práctica</option><option value="11">12. Cierre</option></select></label>
 </div></header>
 <main id="deck"><section class="slide" id="inicio" aria-labelledby="heading-0">
-  <h1 id="heading-0" tabindex="-1">Clase 1 · Entorno e ingesta en Databricks</h1>
-  <p class="lede">Tecfluid · Sesión de 2 horas</p><p>¿Qué archivo reciben seguido y qué necesitan hacer con él cuando llega?</p><div class="sequence"><span>Entorno</span><span>Opciones de carga</span><span>Demo con CSV</span></div>
+  <h1 id="heading-0" tabindex="-1">Entorno e ingesta<br>en Databricks</h1>
+<div class="slide-layout"><div class="slide-copy"><p class="lede">Clase 1 · Sesión de 2 horas</p><p>¿Qué archivo reciben seguido y qué necesitan hacer con él cuando llega?</p><div class="sequence"><span>Entorno</span><span>Opciones de carga</span><span>Demo con CSV</span></div></div><figure class="art"><a href="https://docs.databricks.com/aws/en/assets/images/saas-connector-orchestration-18ab6ef96dab616bb8d5bfb122f33bd9.png" target="_blank" rel="noopener" aria-label="Ampliar imagen de orquestación de una ingesta con Lakeflow"><img src="https://docs.databricks.com/aws/en/assets/images/saas-connector-orchestration-18ab6ef96dab616bb8d5bfb122f33bd9.png" alt="orquestación de una ingesta con Lakeflow" decoding="async" referrerpolicy="no-referrer"></a><figcaption>Ejemplo de orquestación de una ingesta · <a href="https://docs.databricks.com/aws/en/ingestion/lakeflow-connect/" target="_blank" rel="noopener">Databricks</a></figcaption></figure></div>
 </section>
 <section class="slide" id="agenda" aria-labelledby="heading-1">
   <h2 id="heading-1" tabindex="-1">Plan de la sesión</h2>
@@ -70,11 +125,11 @@
 </section>
 <section class="slide" id="add-data" aria-labelledby="heading-3">
   <h2 id="heading-3" tabindex="-1">Add data · De un CSV local a una tabla</h2>
-  <p class="lede">Una carga puntual desde la interfaz.</p><ol><li>Selecciona <a href="materiales/ordenes_trabajo.csv" download>ordenes_trabajo.csv</a>.</li><li>Revisa el encabezado y la vista previa.</li><li>Crea <code>ordenes_ui_demo</code> en el esquema de práctica.</li><li>Abre la tabla en Catalog y ubica <code>orden_id</code>.</li></ol><p class="source"><a href="https://docs.databricks.com/aws/en/ingestion/overview">Carga desde la interfaz ↗</a></p>
+<div class="slide-layout"><div class="slide-copy"><p class="lede">Una carga puntual desde la interfaz.</p><ol><li>Selecciona <a href="materiales/ordenes_trabajo.csv" download>ordenes_trabajo.csv</a>.</li><li>Revisa el encabezado y la vista previa.</li><li>Crea <code>ordenes_ui_demo</code> en el esquema de práctica.</li><li>Abre la tabla en Catalog y ubica <code>orden_id</code>.</li></ol><p class="source"><a href="https://docs.databricks.com/aws/en/ingestion/overview">Carga desde la interfaz ↗</a></p></div><figure class="sample"><figcaption>Muestra de <code>ordenes_trabajo.csv</code></figcaption><div tabindex="0" role="region" aria-label="Vista previa del CSV"><table><thead><tr><th scope="col">Orden</th><th scope="col">Fecha</th><th scope="col">Equipo</th><th scope="col">Estado</th></tr></thead><tbody><tr><td>OT-1001</td><td>02 nov.</td><td>BOM-01</td><td>Cerrada</td></tr><tr><td>OT-1007</td><td>05 nov.</td><td>BOM-04</td><td>Pendiente</td></tr><tr><td>OT-1010</td><td>06 nov.</td><td>VAL-02</td><td>Pendiente</td></tr></tbody></table></div></figure></div>
 </section>
 <section class="slide" id="copy-into" aria-labelledby="heading-4">
   <h2 id="heading-4" tabindex="-1">COPY INTO · Carga por lotes con SQL</h2>
-  <p class="lede">En cada corrida incorpora los archivos nuevos a una tabla Delta. Por defecto omite archivos que ese comando ya cargó a la misma tabla.</p><figure class="code"><figcaption>SQL · ejemplo de práctica</figcaption><pre tabindex="0"><code>CREATE TABLE IF NOT EXISTS ordenes_copy_demo (
+<div class="slide-layout"><div class="slide-copy"><p class="lede">En cada corrida incorpora los archivos nuevos a una tabla Delta. Por defecto omite archivos que ese comando ya cargó a la misma tabla.</p><figure class="code"><figcaption>SQL · ejemplo de práctica</figcaption><pre tabindex="0"><code>CREATE TABLE IF NOT EXISTS ordenes_copy_demo (
   orden_id STRING, fecha DATE,
   equipo STRING, estado STRING
 ) USING DELTA;
@@ -82,11 +137,11 @@
 COPY INTO ordenes_copy_demo
 FROM '/Volumes/&lt;catalogo&gt;/&lt;esquema&gt;/&lt;volumen&gt;/entradas/'
 FILEFORMAT = CSV
-FORMAT_OPTIONS ('header' = 'true');</code></pre></figure><p class="source"><a href="https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/copy-into/">Documentación de COPY INTO ↗</a></p>
+FORMAT_OPTIONS ('header' = 'true');</code></pre></figure><p class="source"><a href="https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/copy-into/">Documentación de COPY INTO ↗</a></p></div><aside class="flow"><h3>Una segunda ejecución</h3><ol><li><strong>Primera corrida</strong><span>Carga el archivo A.</span></li><li><strong>Llega otro CSV</strong><span>La carpeta contiene A y B.</span></li><li><strong>Segunda corrida</strong><span>Carga B y omite A.</span></li></ol><p>Compara los archivos de entrada con las filas nuevas en la tabla.</p></aside></div>
 </section>
 <section class="slide" id="auto-loader" aria-labelledby="heading-5">
   <h2 id="heading-5" tabindex="-1">Auto Loader · Archivos nuevos en una carpeta</h2>
-  <p class="lede">Detecta archivos nuevos y guarda el progreso con un checkpoint. Úsalo cuando seguirán llegando entregas a la misma ubicación.</p><figure class="code"><figcaption>PySpark · ejemplo de práctica</figcaption><pre tabindex="0"><code>ruta = "/Volumes/&lt;catalogo&gt;/&lt;esquema&gt;/&lt;volumen&gt;"
+<div class="slide-layout"><div class="slide-copy"><p class="lede">Detecta archivos nuevos y guarda el progreso con un checkpoint. Úsalo cuando seguirán llegando entregas a la misma ubicación.</p><figure class="code"><figcaption>PySpark · ejemplo de práctica</figcaption><pre tabindex="0"><code>ruta = "/Volumes/&lt;catalogo&gt;/&lt;esquema&gt;/&lt;volumen&gt;"
 ordenes = (spark.readStream.format("cloudFiles")
     .option("cloudFiles.format", "csv")
     .option("header", "true")
@@ -96,21 +151,21 @@ ordenes = (spark.readStream.format("cloudFiles")
 (ordenes.writeStream
     .option("checkpointLocation", ruta + "/checkpoints/ordenes")
     .trigger(availableNow=True)
-    .toTable("&lt;catalogo&gt;.&lt;esquema&gt;.ordenes_auto_demo"))</code></pre></figure><p class="source"><a href="https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader">Documentación de Auto Loader ↗</a></p>
+    .toTable("&lt;catalogo&gt;.&lt;esquema&gt;.ordenes_auto_demo"))</code></pre></figure><p class="source"><a href="https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/auto-loader">Documentación de Auto Loader ↗</a></p></div><aside class="flow"><h3>Una carpeta de entregas</h3><ol><li><strong>Origen</strong><span>Llegan archivos a entradas/.</span></li><li><strong>Auto Loader</strong><span>Detecta archivos y registra el progreso.</span></li><li><strong>Delta</strong><span>Recibe las filas de los archivos procesados.</span></li></ol><p>Con availableNow, cada ejecución procesa lo disponible y termina.</p></aside></div>
 </section>
 <section class="slide" id="lakeflow" aria-labelledby="heading-6">
-  <h2 id="heading-6" tabindex="-1">Lakeflow · Conectar, definir y ejecutar</h2>
-  <dl><div><dt>Lakeflow Connect</dt><dd>Conectores administrados para orígenes compatibles, como aplicaciones y bases de datos.</dd></div><div><dt>Lakeflow Spark Declarative Pipelines</dt><dd>Define tablas y transformaciones en SQL o Python. Un pipeline puede usar Auto Loader para incorporar archivos nuevos.</dd></div><div><dt>Lakeflow Jobs</dt><dd>Coordina tareas, como ejecutar un notebook o iniciar un pipeline, y registra el resultado de cada ejecución.</dd></div></dl><p class="source"><a href="https://docs.databricks.com/aws/en/ingestion/overview">Documentación de Lakeflow Connect ↗</a></p>
+  <h2 id="heading-6" tabindex="-1">Lakeflow Connect, Pipelines y Jobs</h2>
+<div class="slide-layout"><div class="slide-copy"><dl><div><dt>Lakeflow Connect</dt><dd>Conectores administrados para orígenes compatibles, como aplicaciones y bases de datos.</dd></div><div><dt>Lakeflow Spark Declarative Pipelines</dt><dd>Define tablas y transformaciones en SQL o Python. Un pipeline puede usar Auto Loader para incorporar archivos nuevos.</dd></div><div><dt>Lakeflow Jobs</dt><dd>Coordina tareas, como ejecutar un notebook o iniciar un pipeline, y registra el resultado de cada ejecución.</dd></div></dl><p class="source"><a href="https://docs.databricks.com/aws/en/ingestion/overview">Documentación de Lakeflow Connect ↗</a></p></div><figure class="art"><a href="https://docs.databricks.com/aws/en/assets/images/database-connector-orchestration-d6d9fba6b1a6b61da413e0d800334d40.png" target="_blank" rel="noopener" aria-label="Ampliar imagen de orquestación de un conector de base de datos"><img src="https://docs.databricks.com/aws/en/assets/images/database-connector-orchestration-d6d9fba6b1a6b61da413e0d800334d40.png" alt="orquestación de un conector de base de datos" decoding="async" referrerpolicy="no-referrer"></a><figcaption>Ejemplo de ingesta desde una base de datos · <a href="https://docs.databricks.com/aws/en/ingestion/lakeflow-connect/" target="_blank" rel="noopener">Databricks</a></figcaption></figure></div>
 </section>
 <section class="slide" id="pipeline-sql" aria-labelledby="heading-7">
   <h2 id="heading-7" tabindex="-1">Una tabla incremental con Lakeflow</h2>
-  <p class="lede">Dentro de un pipeline SQL, <code>STREAM read_files</code> usa Auto Loader para alimentar una tabla de streaming.</p><figure class="code"><figcaption>SQL · ejemplo de práctica</figcaption><pre tabindex="0"><code>CREATE OR REFRESH STREAMING TABLE ordenes_bronze AS
+<div class="slide-layout"><div class="slide-copy"><p class="lede">Dentro de un pipeline SQL, <code>STREAM read_files</code> usa Auto Loader para alimentar una tabla de streaming.</p><figure class="code"><figcaption>SQL · ejemplo de práctica</figcaption><pre tabindex="0"><code>CREATE OR REFRESH STREAMING TABLE ordenes_bronze AS
 SELECT *
 FROM STREAM read_files(
   '/Volumes/&lt;catalogo&gt;/&lt;esquema&gt;/&lt;volumen&gt;/entradas/',
   format =&gt; 'csv',
   header =&gt; true
-);</code></pre></figure><p>En pantalla, muestra la tabla de destino y el historial de actualizaciones del pipeline.</p><p class="source"><a href="https://docs.databricks.com/aws/en/ldp/developer/sql-dev">Pipelines de Lakeflow con SQL ↗</a></p>
+);</code></pre></figure><p>En pantalla, muestra la tabla de destino y el historial de actualizaciones del pipeline.</p><p class="source"><a href="https://docs.databricks.com/aws/en/ldp/developer/sql-dev">Pipelines de Lakeflow con SQL ↗</a></p></div><figure class="art"><a href="https://docs.databricks.com/aws/en/assets/images/dlt-multi-file-editor-dag-e426c4c8909a4f900ec1134a0f76ecd9.png" target="_blank" rel="noopener" aria-label="Ampliar imagen de grafo de dependencias entre tablas en el editor de pipelines"><img src="https://docs.databricks.com/aws/en/assets/images/dlt-multi-file-editor-dag-e426c4c8909a4f900ec1134a0f76ecd9.png" alt="grafo de dependencias entre tablas en el editor de pipelines" decoding="async" referrerpolicy="no-referrer"></a><figcaption>Grafo de tablas en Lakeflow Pipelines · <a href="https://docs.databricks.com/aws/en/ldp/multi-file-editor" target="_blank" rel="noopener">Databricks</a></figcaption></figure></div>
 </section>
 <section class="slide" id="comparacion" aria-labelledby="heading-8">
   <h2 id="heading-8" tabindex="-1">Qué usar según la carga</h2>
@@ -118,7 +173,7 @@ FROM STREAM read_files(
 </section>
 <section class="slide" id="demo" aria-labelledby="heading-9">
   <h2 id="heading-9" tabindex="-1">El CSV del curso · Del volumen a la tabla</h2>
-  <div class="sequence"><span>Volumen</span><span>Notebook</span><span>Tabla Delta</span></div><ol><li>Sube el CSV al volumen de práctica y copia la ruta.</li><li>Completa la ruta y el esquema en el <a href="materiales/Clase_1_Carga_CSV.py" download>notebook</a>. Revisa la vista previa.</li><li>Ejecuta el notebook como tarea de un job y abre el detalle de la ejecución.</li><li>Abre <code>tecfluid_clase_1_ordenes_demo</code> en Catalog. El notebook reemplaza esa tabla de práctica al repetir la ejecución.</li></ol>
+<div class="slide-layout"><div class="slide-copy"><div class="sequence"><span>Volumen</span><span>Notebook</span><span>Tabla Delta</span></div><ol><li>Sube el CSV al volumen de práctica y copia la ruta.</li><li>Completa la ruta y el esquema en el <a href="materiales/Clase_1_Carga_CSV.py" download>notebook</a>. Revisa la vista previa.</li><li>Ejecuta el notebook como tarea de un job y abre el detalle de la ejecución.</li><li>Abre <code>tecfluid_clase_1_ordenes_demo</code> en Catalog. El notebook reemplaza esa tabla de práctica al repetir la ejecución.</li></ol></div><figure class="art"><a href="https://docs.databricks.com/aws/en/assets/images/example-job-overview-3afc40004602e65c871bd67edfa87f9b.png" target="_blank" rel="noopener" aria-label="Ampliar imagen de vista de un job con cuatro tareas y un disparador diario"><img src="https://docs.databricks.com/aws/en/assets/images/example-job-overview-3afc40004602e65c871bd67edfa87f9b.png" alt="vista de un job con cuatro tareas y un disparador diario" decoding="async" referrerpolicy="no-referrer"></a><figcaption>Ejemplo de un job en la interfaz · <a href="https://docs.databricks.com/aws/en/jobs/" target="_blank" rel="noopener">Databricks</a></figcaption></figure></div>
 </section>
 <section class="slide" id="practica" aria-labelledby="heading-10">
   <h2 id="heading-10" tabindex="-1">Validación por turnos</h2>
@@ -133,6 +188,7 @@ FROM STREAM read_files(
   <output id="counter" aria-live="polite"></output>
   <button id="next" type="button">Siguiente →</button>
   <button id="full" type="button" hidden>Pantalla completa</button>
+  <div class="progress-track" aria-hidden="true"><div id="deck-progress"></div></div>
   <span class="keyboard">Navega con ← →</span>
 </footer>
 <script>
@@ -155,6 +211,7 @@ FROM STREAM read_files(
     previous.disabled = current === 0;
     next.disabled = current === slides.length - 1;
     counter.value = (current + 1) + " / " + slides.length;
+    document.getElementById("deck-progress").style.width = ((current + 1) / slides.length * 100) + "%";
     if (updateHash && location.hash !== "#" + slides[current].id) {
       history.pushState(null, "", "#" + slides[current].id);
     }
