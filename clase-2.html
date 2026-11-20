@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clase 2 · Preparación de EERR KAM v2</title>
+<link rel="stylesheet" href="style.css?v=2">
+<style>
+  body { min-height:100vh; display:grid; grid-template-rows:auto 1fr auto; }
+  .toolbar, .controls { display:flex; flex-wrap:wrap; align-items:center; gap:.7rem; padding-block:.75rem; }
+  .toolbar { justify-content:space-between; }
+  .toolbar a { color:white; }
+  .toolbar label { display:flex; align-items:center; gap:.55rem; }
+  button, select { font:inherit; color:var(--ink); background:white; border:1px solid #796889; border-radius:.35rem; padding:.4rem .7rem; }
+  button:not(:disabled), select { cursor:pointer; }
+  button:disabled { opacity:.45; }
+  button:focus-visible, select:focus-visible, summary:focus-visible { outline:3px solid #8851e4; outline-offset:3px; }
+  #deck { width:min(100% - 2.5rem, 66rem); margin-inline:auto; }
+  .slide { border:0; padding-block:clamp(1.5rem,5vh,4rem); font-size:clamp(1.04rem,2vw,1.32rem); }
+  .slide h1, .slide h2 { font-size:clamp(2.05rem,5vw,3.8rem); line-height:1.07; letter-spacing:-.04em; margin:0 0 .7em; max-width:25ch; }
+  .slide h1 { font-size:clamp(2.55rem,6vw,4.65rem); margin-bottom:.35em; }
+  .lede { font-size:clamp(1.12rem,2.35vw,1.55rem); max-width:65ch; }
+  .slide li + li { margin-top:.37em; }
+  .slide dl { display:grid; gap:.75rem; max-width:58rem; }
+  .slide dl div { display:grid; grid-template-columns:minmax(11rem, 1fr) 2fr; gap:.3rem 1.4rem; border-bottom:1px solid var(--line); padding-bottom:.5rem; }
+  .slide dt { font-weight:750; color:var(--violet); }
+  .slide dd { margin:0; }
+  .sequence { display:flex; flex-wrap:wrap; gap:.35rem 1.1rem; margin:1.5rem 0; font-weight:750; color:var(--violet); }
+  .sequence span + span::before { content:"→"; margin-right:1.1rem; color:var(--muted); }
+  .code { margin:1.1rem 0; color:#faf5ff; background:var(--ink); border-radius:.55rem; padding:.65rem 1rem; }
+  figcaption { font-size:.84em; color:#e2d5f9; }
+  pre { margin:.45rem 0 .15rem; overflow:auto; font-size:clamp(.8rem,1.65vw,1.08rem); line-height:1.4; }
+  .source { font-size:.83em; }
+  details { margin:.7rem 0; padding:.6rem .85rem; background:var(--lavender); border-radius:.35rem; }
+  summary { cursor:pointer; font-weight:700; }
+  .controls { border-top:1px solid var(--line); }
+  .controls #next { background:var(--yellow); font-weight:700; }
+  #counter { min-width:4rem; text-align:center; }
+  .keyboard { margin-inline-start:auto; }
+  :fullscreen { overflow:auto; background:#fbf9ff; }
+  [hidden] { display:none !important; }
+  @media(max-width:640px) { .slide dl div { grid-template-columns:1fr; } .keyboard { display:none; } }
+  @media print {
+    body { display:block; }
+    header, footer { display:none; }
+    .slide[hidden] { display:block !important; }
+    .slide { break-after:page; padding:1rem 0; }
+    .slide:last-child { break-after:auto; }
+    .code { color:#17131f; background:#f0e8ff; }
+    figcaption { color:#554b63; }
+  }
+  body { background:#f7f5fb; font-family:Inter,system-ui,sans-serif; }
+  header { background:#191425; border-bottom:3px solid #e8ca55; }
+  header .wrap.toolbar { width:min(100% - 2.5rem, 82rem); padding-block:.7rem; }
+  .toolbar a { font-weight:700; text-decoration:none; }
+  .toolbar a:hover { text-decoration:underline; }
+  #deck { width:min(100% - 2.5rem, 82rem); }
+  .slide { padding:clamp(1.25rem,4vh,3.1rem) 0; }
+  .slide h2 { font-size:clamp(2rem,4.25vw,3.45rem); max-width:34ch; margin-bottom:.56em; }
+  .slide h1 { font-size:clamp(2.65rem,6.4vw,5.4rem); max-width:22ch; }
+  .slide-layout { display:grid; grid-template-columns:minmax(0,1.26fr) minmax(0,1fr); align-items:center; gap:clamp(1.25rem,4vw,3.4rem); }
+  .slide-copy { min-width:0; }
+  .slide-copy > :first-child { margin-top:0; }
+  #inicio { background:radial-gradient(ellipse at 96% 5%, #483366, transparent 65%),#221830; color:#faf5ff; margin-block:1rem; border-radius:1rem; padding:clamp(1.4rem,5vw,4rem); }
+  #inicio .lede,#inicio .sequence,#inicio .sequence span + span::before { color:#f7d96d; }
+  #inicio .slide-layout { grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+  .art,.sample { margin:0; border:1px solid #e3daee; border-radius:.7rem; overflow:hidden; background:#fff; box-shadow:0 .45rem 1.5rem #2a194417; }
+  .art > a { display:block; }
+  .art img { display:block; width:100%; max-height:35vh; object-fit:contain; color:#34274a; }
+  .art a:focus-visible { outline-offset:-4px; }
+  .art figcaption,.sample figcaption { color:#48395c; background:#f0ebf7; padding:.65rem .85rem; font-size:.78em; }
+  .sample div { overflow:auto; }
+  .sample table { min-width:23rem; font-size:.78em; }
+  .sample td,.sample th { padding:.55rem .68rem; text-align:left; white-space:nowrap; }
+  .sample td { border-left:0; }
+  .flow { background:#efe9f8; border-left:4px solid #7643c1; padding:1rem 1.15rem; border-radius:0 .65rem .65rem 0; }
+  .flow h3 { font-size:1.05em; }
+  .flow ol { padding-left:1.35em; }
+  .flow li { padding-left:.16em; }
+  .flow li::marker { color:#6230a4; font-weight:800; }
+  .flow li span { display:block; font-size:.88em; color:#4c3c60; }
+  .flow p { margin-bottom:0; font-size:.83em; }
+  .slide dl div { grid-template-columns:minmax(0,1fr) minmax(0,1.6fr); }
+  #lakeflow dl div { display:block; padding-bottom:.65rem; }
+  #lakeflow dd { font-size:.91em; margin-top:.16rem; }
+  .code { background:#211830; }
+  .code pre { font-size:clamp(.77rem,1.39vw,1.04rem); }
+  footer.controls { position:sticky; bottom:0; z-index:2; width:100%; background:#f7f5fb; padding-inline:max(1.25rem,calc((100% - 82rem)/2)); }
+  .progress-track { height:5px; border-radius:5px; overflow:hidden; background:#e4daf0; flex:1 1 3rem; min-width:2rem; }
+  #deck-progress { background:#7546bc; height:100%; width:0; }
+  @media(max-width:790px) {
+    .slide-layout,#inicio .slide-layout { grid-template-columns:minmax(0,1fr); }
+    .art img { max-height:45vh; }
+    .slide dl div { grid-template-columns:minmax(0,1fr); }
+  }
+  @media(max-width:510px) {
+    .controls { gap:.4rem; }
+    .controls button { padding-inline:.5rem; font-size:.85rem; }
+    #counter { min-width:2.75rem; }
+    .progress-track { flex-basis:100%; }
+  }
+  @media print {
+    #inicio { background:white; color:#191425; margin:0; padding:1rem 0; }
+    #inicio .lede,#inicio .sequence,#inicio .sequence span + span::before { color:#5423a5; }
+    .art,.sample { box-shadow:none; }
+  }
+  .practice-downloads { display:flex; flex-wrap:wrap; gap:.35rem 1.25rem; padding-left:1.25rem; }
+  .practice-downloads li + li { margin-top:0; }
+  .practice-code figcaption { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.4rem; }
+  .practice-code pre { max-height:55vh; }
+  #copy-feedback { display:block; font-size:.82em; color:#e2d5f9; }
+</style>
+</head>
+<body>
+<header><div class="wrap toolbar">
+  <a href="index.html#programa">Curso de Databricks · Tecfluid</a>
+  <label id="jump-label" hidden>Ir a <select id="jump"><option value="0">1. Qué acordamos</option><option value="1">2. Fuente</option><option value="2">3. Carga</option><option value="3">4. Formatos</option><option value="4">5. Duplicados</option><option value="5">6. Práctica</option><option value="6">7. Cierre</option></select></label>
+</div></header>
+<main id="deck"><section class="slide" id="paso-1"><h2 tabindex="-1">Preparar el estado de resultados KAM v2</h2><p>¿Cómo demostramos que la copia de Databricks representa la misma versión de la hoja de Drive?</p><p>Al terminar, cada participante entregará el origen, dos conteos comparables y una fila que requiera una decisión.</p></section>
+<section class="slide" id="paso-2"><h2 tabindex="-1">Qué representa una fila</h2><ol><li>Abre la versión 2 con Sebastián. Anota libro, pestaña, encabezado y hora del corte.</li><li>Elige un período y confirma si la hoja incluye subtotales, filas auxiliares o filtros.</li><li>Pregunta qué combinación distingue una línea. Un KAM puede aparecer varias veces en un mismo período.</li></ol></section>
+<section class="slide" id="paso-3"><h2 tabindex="-1">Seguir una entrega de Drive a Databricks</h2><p>En el flujo que vieron el martes, una copia temporal llega a landing antes de la lectura en Bronze.</p><ol><li>Ubica en el flujo existente la hoja seleccionada, la última ejecución y el archivo que generó.</li><li>Para reproducir el corte en clase, descarga solo la pestaña acordada como CSV y súbela al volumen de práctica. Copia la ruta.</li><li>Lee como texto y contrasta encabezados y cantidad de filas con Drive. Conserva los valores originales para investigar diferencias.</li></ol></section>
+<section class="slide" id="paso-4"><h2 tabindex="-1">Vacío, cero y formato dudoso</h2><p>Compara <code>0</code>, una celda vacía y <code>1.200,50</code>. ¿Cuál puedes sumar y qué convención necesitas confirmar?</p><p>Conserva el valor original junto al diagnóstico. Acuerda moneda y separadores antes de convertir. Revisa por separado cualquier total por moneda.</p></section>
+<section class="slide" id="paso-5"><h2 tabindex="-1">Dos filas con la misma clave</h2><p>Agrupa por la clave que acordaron y abre un grupo con más de una fila. Compara las demás columnas con el origen.</p><p>Explica si se trata de dos líneas válidas, una repetición exacta o un caso pendiente de negocio. Anota la evidencia antes de proponer una corrección.</p></section>
+<section class="slide" id="paso-6"><h2 tabindex="-1">Laboratorio de Sebastián y Nelson</h2><p><a href='materiales/Clase_2_EERR_KAM.py' download>Descargar notebook de práctica</a></p><ol><li>Sebastián registra el corte de Drive, exporta la pestaña y reconcilia filas y encabezados.</li><li>Nelson configura la clave y la columna de importe, y localiza vacíos, formatos inesperados y claves repetidas.</li><li>Intercambien pantallas. Cada uno reproduce una comprobación del otro.</li></ol><details><summary>Ensayo con muestra ficticia</summary><p>Deja la ruta vacía. Se esperan 5 filas, un grupo de 2 filas con clave repetida, un importe vacío y uno con formato a revisar. El cero cumple la convención del ensayo.</p></details></section>
+<section class="slide" id="paso-7"><h2 tabindex="-1">¿La carga está lista para Silver?</h2><p>Entreguen el libro y pestaña, hora de corte, filas en origen y destino, clave probada y conteo por diagnóstico.</p><p>Seleccionen un caso, indiquen la regla propuesta y quién debe confirmarla. Para la próxima carga, acuerden frecuencia y cómo distinguir una entrega nueva de la repetición del mismo corte.</p></section></main>
+<footer class="wrap controls" id="controls" hidden>
+  <button id="prev" type="button">← Anterior</button>
+  <output id="counter" aria-live="polite"></output>
+  <button id="next" type="button">Siguiente →</button>
+  <button id="full" type="button" hidden>Pantalla completa</button>
+  <div class="progress-track" aria-hidden="true"><div id="deck-progress"></div></div>
+  <span class="keyboard">Navega con ← →</span>
+</footer>
+<script>
+  const slides = Array.from(document.querySelectorAll(".slide"));
+  const jump = document.getElementById("jump");
+  const previous = document.getElementById("prev");
+  const next = document.getElementById("next");
+  const full = document.getElementById("full");
+  const counter = document.getElementById("counter");
+  let current = 0;
+
+  function show(index, updateHash = false) {
+    const target = Math.min(Math.max(index, 0), slides.length - 1);
+    const changed = current !== target;
+    current = target;
+    for (const [number, slide] of slides.entries()) {
+      slide.hidden = number !== current;
+    }
+    jump.value = current;
+    previous.disabled = current === 0;
+    next.disabled = current === slides.length - 1;
+    counter.value = (current + 1) + " / " + slides.length;
+    document.getElementById("deck-progress").style.width = ((current + 1) / slides.length * 100) + "%";
+    if (updateHash && location.hash !== "#" + slides[current].id) {
+      history.pushState(null, "", "#" + slides[current].id);
+    }
+    if (changed) {
+      slides[current].querySelector("h1, h2").focus({ preventScroll: true });
+      window.scrollTo(0, 0);
+    }
+  }
+
+  function showFromHash() {
+    show(slides.findIndex(slide => "#" + slide.id === location.hash));
+  }
+
+  previous.addEventListener("click", () => show(current - 1, true));
+  next.addEventListener("click", () => show(current + 1, true));
+  jump.addEventListener("change", () => show(Number(jump.value), true));
+  window.addEventListener("hashchange", showFromHash);
+  document.addEventListener("keydown", event => {
+    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey ||
+        event.target.closest("select, input, textarea, pre, [contenteditable]")) return;
+    if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+      event.preventDefault();
+      show(current + (event.key === "ArrowRight" ? 1 : -1), true);
+    }
+  });
+  if (document.fullscreenEnabled) {
+    full.hidden = false;
+    full.addEventListener("click", async () => {
+      try {
+        if (document.fullscreenElement) await document.exitFullscreen();
+        else await document.documentElement.requestFullscreen();
+      } catch {
+        full.hidden = true;
+      }
+    });
+    document.addEventListener("fullscreenchange", () => {
+      full.textContent = document.fullscreenElement ? "Salir de pantalla completa" : "Pantalla completa";
+    });
+  }
+  document.getElementById("jump-label").hidden = false;
+  document.getElementById("controls").hidden = false;
+  showFromHash();
+
+</script>
+</body>
+</html>
