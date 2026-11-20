@@ -116,13 +116,82 @@
   <a href="index.html#programa">Curso de Databricks · Tecfluid</a>
   <label id="jump-label" hidden>Ir a <select id="jump"><option value="0">1. Objetivo</option><option value="1">2. Ingesta original</option><option value="2">3. Bronze</option><option value="3">4. Tipado</option><option value="4">5. Errores</option><option value="5">6. Laboratorio</option><option value="6">7. Cierre</option></select></label>
 </div></header>
-<main id="deck"><section class="slide" id="paso-1"><h2 tabindex="-1">De Drive a Silver</h2><p>Sigue la ingesta original de EERR KAM v2. Al terminar, cada participante tendrá una tabla Silver de práctica y podrá explicar qué filas quedaron pendientes y por qué.</p></section>
-<section class="slide" id="paso-2"><h2 tabindex="-1">Localizar y seguir la carga de Drive</h2><ol><li>En Jobs &amp; Pipelines abre el job original. Identifica la tarea de Drive, el libro y la pestaña configurados con Sebastián.</li><li>Abre una ejecución exitosa del corte elegido. Sigue sus parámetros y salida desde landing hasta el nombre completo de Bronze. Si la ingesta es compartida, utiliza la corrida programada.</li><li>En Catalog abre el historial de Bronze y anota la versión Delta asociada. Compara fecha, encabezados y filas con el mismo corte en Drive.</li></ol></section>
-<section class="slide" id="paso-3"><h2 tabindex="-1">¿Qué representa una fila?</h2><p>Lee esa versión de Bronze con el notebook. Inspecciona el esquema, una muestra, la moneda y la granularidad. Acuerda qué combinación de columnas identifica una línea y qué importe es obligatorio.</p></section>
-<section class="slide" id="paso-4"><h2 tabindex="-1">Del importe original a DECIMAL(18,2)</h2><p>Conserva los identificadores como texto para respetar sus ceros iniciales. Acuerda una convención de separadores para el importe antes de convertir.</p><p>Con coma decimal, <code>1.200,50</code> debe quedar en <code>1200.50</code>. Un cero es válido. Un vacío, texto inesperado o valor fuera de precisión requiere revisión.</p></section>
-<section class="slide" id="paso-5"><h2 tabindex="-1">Investigar antes de corregir</h2><ol><li>Filtra las observaciones por motivo. Compara el valor original con la misma línea de Drive.</li><li>Si se repite la clave, revisa si falta una dimensión o si la fila realmente se duplicó.</li><li>Si falló el formato, confirma la convención con negocio. Ajusta la regla y vuelve a ejecutar desde la misma versión Bronze.</li></ol></section>
-<section class="slide" id="paso-6"><h2 tabindex="-1">Sebastián y Nelson construyen su Silver</h2><p><a href='materiales/Clase_2_EERR_KAM.py' download>Descargar notebook de práctica</a></p><p>Sebastián identifica corrida, versión y clave. Nelson explica la conversión y diagnostica una observación. Luego cada uno configura sus campos, ejecuta las celdas y guarda la proyección de claves e importe en una tabla Silver personal.</p></section>
-<section class="slide" id="paso-7"><h2 tabindex="-1">Conciliar el resultado</h2><p>Comprueba que filas Bronze = filas Silver + filas observadas. Compara el importe del mismo período y moneda con Drive e identifica cuánto explican las observaciones.</p><p>Presenta la versión de origen, el esquema final, la regla aplicada y un caso pendiente con su responsable.</p></section></main>
+<main id="deck"><section class="slide" id="paso-1"><h2 tabindex="-1">De Drive a Silver</h2><p>Sigue la ingesta original de EERR KAM v2. Al terminar, cada participante tendrá una tabla Silver de práctica y podrá explicar qué filas quedaron pendientes y por qué.</p><div class="sequence"><span>Drive</span><span>Landing</span><span>Bronze</span><span>Silver de práctica</span></div></section>
+<section class="slide" id="paso-2"><h2 tabindex="-1">Localizar y seguir la carga de Drive</h2><div class="slide-layout"><div><ol><li>En Jobs &amp; Pipelines abre el job original. Identifica la tarea de Drive, el libro y la pestaña configurados con Sebastián.</li><li>Abre una ejecución exitosa del corte elegido. Sigue sus parámetros y salida desde landing hasta el nombre completo de Bronze. Si la ingesta es compartida, utiliza la corrida programada.</li><li>En Catalog abre el historial de Bronze y anota la versión Delta asociada. Compara fecha, encabezados y filas con el mismo corte en Drive.</li></ol></div><figure class="art"><a href="https://docs.databricks.com/aws/en/assets/images/example-job-overview-3afc40004602e65c871bd67edfa87f9b.png" target="_blank" rel="noopener"><img alt="Ejemplo de tareas y dependencias de un job" src="https://docs.databricks.com/aws/en/assets/images/example-job-overview-3afc40004602e65c871bd67edfa87f9b.png"></a><figcaption>Ejemplo de tareas y dependencias de un job. <a href="https://docs.databricks.com/aws/en/jobs/">Fuente: Databricks</a></figcaption></figure></div></section>
+<section class="slide" id="paso-3"><h2 tabindex="-1">¿Qué representa una fila?</h2><p>Lee esa versión de Bronze con el notebook. Inspecciona el esquema, una muestra, la moneda y la granularidad. Acuerda qué combinación de columnas identifica una línea y qué importe es obligatorio.</p><details class="lesson-notes"><summary>Celda 1 · Leer Bronze</summary><p>Completa la tabla y la versión que identificaste en la ejecución.</p><figure class="code practice-code"><figcaption>Python · Databricks <button type="button" data-copy="snippet-1">Copiar código</button></figcaption><pre tabindex="0"><code id="snippet-1"># Paso previo: en Jobs &amp; Pipelines, abre la ingesta original de Drive.
+# Confirma archivo y pestaña KAM v2, tarea de carga y tabla Delta Bronze de salida.
+# Anota la ejecución exitosa y la versión Delta que escribió.
+from pyspark.sql import functions as F, Window
+import re
+
+bronze = "&lt;catalogo&gt;.&lt;esquema_bronze&gt;.&lt;tabla_kam_v2&gt;"
+version = None  # Número de versión Delta que corresponde al corte de Drive.
+if "&lt;" in bronze or version is None:
+    raise ValueError("Completa el nombre de Bronze y la versión del corte.")
+datos = spark.read.option("versionAsOf", version).table(bronze)
+datos.printSchema()
+display(datos.limit(20))
+print("Filas Bronze:", datos.count())</code></pre></figure><output aria-live="polite"></output></details></section>
+<section class="slide" id="paso-4"><h2 tabindex="-1">Del importe original a DECIMAL(18,2)</h2><p>Conserva los identificadores como texto para respetar sus ceros iniciales. Acuerda una convención de separadores para el importe antes de convertir.</p><p>Con coma decimal, <code>1.200,50</code> debe quedar en <code>1200.50</code>. Un cero es válido. Un vacío, texto inesperado o valor fuera de precisión requiere revisión.</p><details class="lesson-notes"><summary>Celda 2 · Elegir clave, importe y separador</summary><p>Usa los encabezados reales. Si Bronze ya entrega un importe numérico, selecciona punto decimal para su representación en Spark.</p><figure class="code practice-code"><figcaption>Python · Databricks <button type="button" data-copy="snippet-2">Copiar código</button></figcaption><pre tabindex="0"><code id="snippet-2"># Escribe etiquetas reales de Bronze. Elige un importe obligatorio y una clave
+# que, según negocio, deba ser única. La Silver del ejercicio proyecta estos campos.
+claves = ["&lt;campo de la clave&gt;"]  # Agrega campos si la clave es compuesta.
+campo_importe = "&lt;columna de importe&gt;"
+decimal = ","  # "," para 1.200,50 o "." para 1,200.50; confirmar en el origen.
+if not claves or len(set(claves)) != len(claves) or campo_importe in claves:
+    raise ValueError("Revisa los campos distintos que componen la clave y el importe.")
+if set(claves + [campo_importe]) - set(datos.columns) or decimal not in (",", "."):
+    raise ValueError("Revisa las columnas de Bronze y el separador decimal.")
+
+def columna(nombre):
+    return F.col("`" + nombre.replace("`", "``") + "`")
+
+nombres = [f"clave_{i+1}" for i in range(len(claves))]
+base = datos.select(
+    *[F.trim(columna(c).cast("string")).alias(n) for c, n in zip(claves, nombres)],
+    columna(campo_importe).cast("string").alias("importe_original")
+)
+print("Campos de la clave:", dict(zip(nombres, claves)))</code></pre></figure><output aria-live="polite"></output></details></section>
+<section class="slide" id="paso-5"><h2 tabindex="-1">Investigar antes de corregir</h2><ol><li>Filtra las observaciones por motivo. Compara el valor original con la misma línea de Drive.</li><li>Si se repite la clave, revisa si falta una dimensión o si la fila realmente se duplicó.</li><li>Si falló el formato, confirma la convención con negocio. Ajusta la regla y vuelve a ejecutar desde la misma versión Bronze.</li></ol><details class="lesson-notes"><summary>Celda 3 · Convertir e investigar</summary><p>Ejecuta después de las celdas 1 y 2. Abre una observación y explica cuál de las reglas la marcó.</p><figure class="code practice-code"><figcaption>Python · Databricks <button type="button" data-copy="snippet-3">Copiar código</button></figcaption><pre tabindex="0"><code id="snippet-3"># Conserva el texto original. Si Bronze ya guarda un tipo numérico, Spark lo
+# representa con punto decimal al convertirlo a texto.
+texto = F.trim(F.col("importe_original"))
+miles = "." if decimal == "," else ","
+d, m = re.escape(decimal), re.escape(miles)
+patron = rf"^[+-]?(?:[0-9]+|[0-9]{{1,3}}(?:{m}[0-9]{{3}})+)(?:{d}[0-9]{{1,2}})?$"
+normalizado = F.regexp_replace(F.regexp_replace(texto, m, ""), d, ".")
+tipado = (base.withColumn("normalizado", F.when(texto.rlike(patron), normalizado))
+    .withColumn("importe", F.expr("try_cast(normalizado AS DECIMAL(18,2))"))
+    .withColumn("filas_por_clave", F.count("*").over(Window.partitionBy(*nombres))))
+clave_vacia = F.lit(False)
+for nombre in nombres:
+    clave_vacia = clave_vacia | F.col(nombre).isNull() | (F.col(nombre) == "")
+revision = tipado.withColumn("motivo", F.concat_ws(" / ",
+    F.when(clave_vacia, "clave vacía"),
+    F.when(texto.isNull() | (texto == ""), "importe vacío"),
+    F.when((texto != "") &amp; F.col("importe").isNull(), "formato o precisión inválidos"),
+    F.when(F.col("filas_por_clave") &gt; 1, "clave repetida: revisar")
+))
+validas = revision.where(F.col("motivo") == "").select(*nombres, "importe")
+observadas = revision.where(F.col("motivo") != "")
+display(observadas.select(*nombres, "importe_original", "motivo").limit(50))
+assert datos.count() == validas.count() + observadas.count()
+print("Válidas:", validas.count(), "Para revisar:", observadas.count())</code></pre></figure><output aria-live="polite"></output></details></section>
+<section class="slide" id="paso-6"><h2 tabindex="-1">Sebastián y Nelson construyen su Silver</h2><div class="slide-layout"><div><p><a href='materiales/Clase_2_EERR_KAM.py' download>Descargar notebook de práctica</a></p><p>Sebastián identifica corrida, versión y clave. Nelson explica la conversión y diagnostica una observación. Luego cada uno configura sus campos, ejecuta las celdas y guarda la proyección de claves e importe en una tabla Silver personal.</p></div><figure class="art"><a href="https://docs.databricks.com/aws/en/assets/images/dlt-multi-file-editor-dag-e426c4c8909a4f900ec1134a0f76ecd9.png" target="_blank" rel="noopener"><img alt="Ejemplo de dependencias entre tablas en un pipeline" src="https://docs.databricks.com/aws/en/assets/images/dlt-multi-file-editor-dag-e426c4c8909a4f900ec1134a0f76ecd9.png"></a><figcaption>Ejemplo de dependencias entre tablas en un pipeline. <a href="https://docs.databricks.com/aws/en/ldp/multi-file-editor">Fuente: Databricks</a></figcaption></figure></div><details class="lesson-notes"><summary>Celda 4 · Escribir la Silver personal</summary><p>Elige una tabla nueva en el esquema de capacitación. La salida conserva las claves y el importe tipado.</p><figure class="code practice-code"><figcaption>Python · Databricks <button type="button" data-copy="snippet-4">Copiar código</button></figcaption><pre tabindex="0"><code id="snippet-4"># Ejecuta tras revisar los controles y el total de un período y moneda con Drive.
+# Elige un destino nuevo dentro del esquema Silver de capacitación.
+silver = "&lt;catalogo_de_clase&gt;.&lt;silver_de_clase&gt;.&lt;tabla_personal&gt;"
+if "&lt;" in silver or silver.lower() == bronze.lower():
+    raise ValueError("Completa un destino Silver de capacitación distinto del origen.")
+if not validas.take(1):
+    raise ValueError("Revisa los diagnósticos antes de publicar una Silver vacía.")
+validas.write.format("delta").mode("errorifexists").saveAsTable(silver)
+salida = spark.table(silver)
+salida.printSchema()
+assert salida.count() == validas.count()
+display(salida.limit(20))</code></pre></figure><output aria-live="polite"></output></details></section>
+<section class="slide" id="paso-7"><h2 tabindex="-1">Conciliar el resultado</h2><p>Comprueba que filas Bronze = filas Silver + filas observadas. Compara el importe del mismo período y moneda con Drive e identifica cuánto explican las observaciones.</p><p>Presenta la versión de origen, el esquema final, la regla aplicada y un caso pendiente con su responsable.</p><details class="lesson-notes"><summary>Comprobación final · Conciliar filas</summary><p>Ejecuta después de crear Silver. Si el control pasa, compara también los importes de un mismo período y moneda.</p><figure class="code practice-code"><figcaption>Python · Databricks <button type="button" data-copy="snippet-5">Copiar código</button></figcaption><pre tabindex="0"><code id="snippet-5">n_bronze = datos.count()
+n_silver = spark.table(silver).count()
+n_observadas = observadas.count()
+print(n_bronze, n_silver, n_observadas)
+assert n_bronze == n_silver + n_observadas</code></pre></figure><output aria-live="polite"></output></details></section></main>
 <footer class="wrap controls" id="controls" hidden>
   <button id="prev" type="button">← Anterior</button>
   <output id="counter" aria-live="polite"></output>
@@ -195,6 +264,23 @@
   document.getElementById("controls").hidden = false;
   showFromHash();
 
+  for (const button of document.querySelectorAll("[data-copy]")) {
+    button.addEventListener("click", async () => {
+      const code = document.getElementById(button.dataset.copy);
+      const status = button.closest("details").querySelector("output");
+      try {
+        await navigator.clipboard.writeText(code.textContent);
+        status.textContent = "Código copiado.";
+      } catch {
+        const range = document.createRange();
+        range.selectNodeContents(code);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        status.textContent = "Código seleccionado. Usa Ctrl+C o ⌘C.";
+      }
+    });
+  }
 </script>
 </body>
 </html>
