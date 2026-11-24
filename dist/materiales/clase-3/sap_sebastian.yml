@@ -1,0 +1,16 @@
+sap:
+  secret_scope: scope_de_practica
+  secret_key: clave_de_practica
+
+bronze:
+  catalog: capacitacion
+  schema: bronze
+
+sources:
+  - nombre: sap_peru_oc_sebastian
+    activo: true
+    query: >-
+      SELECT "DocNum", "LineNum", "ItemCode"
+      FROM "SAP_PERU_DEMO"."LINEAS_OC"
+      ORDER BY "DocNum", "LineNum", "ItemCode"
+      LIMIT 5
