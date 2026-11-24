@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clase 3 · Configurar una fuente SAP | Tecfluid</title>
+  <style>
+    :root { color-scheme:light; --ink:#21182d; --muted:#5e536a; --purple:#5423a5; --paper:#f8f6fb; --lavender:#eee7f8; --line:#dcd3e6; --yellow:#f7d96d; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:clamp(16px,1.55vw,23px)/1.48 Inter,system-ui,sans-serif; }
+    button,select { font:inherit; }
+    a { color:var(--purple); text-underline-offset:.17em; }
+    :focus-visible { outline:3px solid #8851e4; outline-offset:3px; }
+    .shell { width:min(100% - 3rem,76rem); margin:auto; }
+    header { background:#1c1526; border-bottom:3px solid var(--yellow); color:#fff; }
+    .top, .controls { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.6rem 1.25rem; padding-block:.7rem; font-size:1rem; }
+    header strong { font-size:1.05rem; }
+    .controls button,select { color:var(--ink); background:#fff; border:1px solid #978a9f; border-radius:.4rem; padding:.4rem .7rem; }
+    .controls button:enabled, select { cursor:pointer; }
+    .controls button:disabled { opacity:.45; }
+    #next { background:var(--yellow); font-weight:700; }
+    #jump { max-width:100%; margin-left:.3rem; }
+    main { padding-block:clamp(1.3rem,4.5vh,3.5rem); min-height:calc(100vh - 7.5rem); }
+    section { margin-bottom:2.4rem; }
+    h1,h2 { letter-spacing:-.042em; line-height:1.06; margin:0 0 .48em; text-wrap:balance; }
+    h1 { font-size:clamp(2.65rem,5.8vw,5.2rem); }
+    h2 { font-size:clamp(2.2rem,4.4vw,3.7rem); }
+    h1:focus,h2:focus { outline:none; }
+    h3 { font-size:1.05em; margin:0 0 .45rem; }
+    p { max-width:75ch; margin:.55em 0; }
+    .split { display:grid; gap:1.4rem clamp(1.5rem,3.6vw,3.7rem); grid-template-columns:1fr 1fr; align-items:start; }
+    .split > * { min-width:0; }
+    .cover { background:#271c38; color:#fff; border-radius:.9rem; padding:clamp(1.4rem,4.8vw,4.2rem); }
+    .cover p { max-width:60ch; color:#e1d8ea; }
+    .cover .route { color:var(--yellow); font-weight:650; margin-block:1.25em .1em; }
+    .route span { display:inline-block; }
+    .panel { border:1px solid var(--line); background:#fff; border-radius:.7rem; padding:1.1rem 1.25rem; }
+    .panel p:last-child, .callout p:last-child { margin-bottom:0; }
+    .callout { background:var(--lavender); border-left:4px solid #7443b5; border-radius:0 .5rem .5rem 0; padding:.8rem 1rem; margin-top:1.15rem; }
+    .callout p { margin:0; }
+    code,pre { font-family:ui-monospace,Consolas,monospace; }
+    code { font-size:.88em; overflow-wrap:anywhere; }
+    pre { padding:1rem 1.15rem; border-radius:.6rem; background:#241a32; color:#fbf7ff; line-height:1.5; overflow-x:auto; margin:.6rem 0; }
+    pre code { display:block; font-size:clamp(.91rem,1.4vw,1.22rem); overflow-wrap:normal; }
+    ol,ul { padding-left:1.5em; margin:.4em 0; }
+    li + li { margin-top:.45em; }
+    li::marker { color:var(--purple); font-weight:700; }
+    dl { margin:0; }
+    dl > div { padding:.55em 0; border-bottom:1px solid var(--line); }
+    dl > div:last-child { border:0; }
+    dt { font-weight:750; color:var(--purple); }
+    dd { margin:.12em 0 0; }
+    details { margin:.85rem 0; padding:.7rem 1rem; background:var(--lavender); border-radius:.45rem; }
+    summary { cursor:pointer; color:var(--purple); font-weight:650; }
+    details p { margin-bottom:.15em; }
+    .files { display:flex; flex-wrap:wrap; gap:.45rem 1.5rem; padding:0; list-style:none; }
+    .files li { margin:0; }
+    footer { position:sticky; bottom:0; background:var(--paper); border-top:1px solid var(--line); }
+    .left,.right { display:flex; align-items:center; flex-wrap:wrap; gap:.65rem; }
+    output { min-width:3.4rem; text-align:center; }
+    [hidden] { display:none !important; }
+    @media(max-width:760px) {
+      .shell { width:min(100% - 1.7rem,76rem); }
+      .split { grid-template-columns:1fr; }
+      .controls { gap:.4rem; }
+      #full { display:none; }
+    }
+    @media print {
+      body { background:#fff; font-size:11pt; }
+      header,footer,#choose { display:none; }
+      .shell { width:100%; }
+      main { padding:0; }
+      main section[hidden],main section { display:block !important; break-after:page; }
+      main section:last-child { break-after:auto; }
+      .split { display:block; }
+      .panel { margin-bottom:.75rem; }
+      .cover { background:#fff; color:var(--ink); padding:0; }
+      .cover p,.cover .route { color:var(--ink); }
+      pre { color:var(--ink); background:#f1eef5; white-space:pre-wrap; }
+      details { break-inside:avoid; }
+    }
+  </style>
+</head>
+<body>
+  <header><div class="shell top">
+    <strong><a href="index.html#programa" style="color:inherit">Curso de Databricks · Tecfluid</a></strong>
+    <label id="choose" hidden>Ir a <select id="jump" aria-label="Ir a un paso"></select></label>
+  </div></header>
+  <main class="shell" id="deck">
+    <section id="inicio" data-title="Objetivo" class="cover">
+      <h1 tabindex="-1">Configurar una fuente SAP con YAML</h1>
+      <p>Clase 3 · Martes 24 de noviembre</p>
+      <p>Hoy vamos a leer una carga de Perú que ya terminó. Después cada uno probará su consulta, corregirá su YAML y dejará definido el destino Bronze para el piloto del viernes.</p>
+      <p class="route"><span>Consulta de SAP</span> → <span>Configuración YAML</span> → <span>Tabla Bronze</span></p>
+    </section>
+    <section id="repaso" data-title="Repaso de EERR KAM">
+      <h2 tabindex="-1">¿De dónde salió el USD de EERR KAM?</h2>
+      <div class="split">
+        <div><p>Sebastián comparte pantalla. Nelson sigue el recorrido y ubica el mismo campo en cada paso.</p>
+          <ol><li>En la copia de EERR2026, abre <code>SqlEERR</code> y ubica <code>Mes</code> y <code>USD</code>.</li>
+          <li>En Catalog, abre la tabla Bronze de la práctica de EERR KAM. Compara una línea con la hoja y mira con qué tipo llegó <code>USD</code>.</li>
+          <li>Abre la práctica de Silver. Ubica la línea original y revisa cómo se convirtió el importe.</li></ol>
+        </div>
+        <div class="panel"><h3>En el turno de Nelson</h3><p>Comparte tu pantalla y muestra qué revisarías si en Silver el importe queda vacío.</p>
+          <details><summary>Si necesitas una pista</summary><p>Vuelve a la misma línea de la hoja. Distingue un cero, una celda vacía y un texto que la conversión no pudo leer.</p></details>
+        </div>
+      </div>
+    </section>
+    <section id="configuracion" data-title="Leer el YAML">
+      <h2 tabindex="-1">¿Qué parte del YAML cambia al agregar una consulta?</h2>
+      <div class="split">
+        <div><p>Abre el <a download href="materiales/clase-3/sap_nicolas.yml">YAML de Nicolás</a>. ¿Qué cambiarías para traer otra consulta del mismo sistema?</p>
+          <dl><div><dt><code>sap</code></dt><dd>Indica dónde busca el notebook la conexión a SAP.</dd></div>
+          <div><dt><code>bronze</code></dt><dd>Declara catálogo y esquema. En Settings del pipeline se confirma el destino efectivo.</dd></div>
+          <div><dt><code>sources</code></dt><dd>Contiene un bloque por fuente. Cada guion inicia una entrada.</dd></div></dl>
+        </div>
+        <div class="panel"><h3>Dentro de una fuente</h3>
+          <dl><div><dt><code>nombre</code></dt><dd>Define el nombre de la tabla de salida.</dd></div>
+          <div><dt><code>query</code></dt><dd>Contiene el SQL que se ejecuta en SAP HANA. Con <code>&gt;-</code> podemos escribir este SELECT en varias líneas.</dd></div>
+          <div><dt><code>activo</code></dt><dd>Con <code>false</code>, el pipeline omite esa fuente en su ejecución.</dd></div></dl>
+        </div>
+      </div>
+      <div class="callout"><p>El notebook lee el SQL en HANA y genera una tabla Delta. Muestra en qué catálogo y esquema quedaría tu <code>nombre</code> si se habilitara para el piloto.</p></div>
+    </section>
+    <section id="precarga" data-title="Abrir la carga de Perú">
+      <h2 tabindex="-1">Abramos cinco líneas de órdenes de compra</h2>
+      <p>Nicolás muestra una extracción de SAP Perú ya cargada en Bronze. Este SELECT representa el caso con una fuente de ejemplo.</p>
+      <pre><code>SELECT "DocNum", "LineNum", "ItemCode"
+FROM "SAP_PERU_DEMO"."LINEAS_OC"
+ORDER BY "DocNum", "LineNum", "ItemCode"
+LIMIT 5</code></pre>
+      <p>Elige una línea. ¿Qué pasaría si usáramos solo el número de documento para identificarla? Cuenta los pares documento–línea distintos en la muestra.</p>
+    </section>
+    <section id="consulta" data-title="Preparar la consulta">
+      <h2 tabindex="-1">De Query Manager a una fuente de práctica</h2>
+      <div class="split">
+        <div><h3>Sebastián</h3><p>Abre <a href="materiales/clase-3/Clase_3_Validar_SAP.py" download>el notebook de práctica</a> y el archivo <code>sap_sebastian.yml</code> junto al notebook. Cambia <code>LIMIT 5</code> por <code>LIMIT 3</code>, guarda y vuelve a ejecutar. Muestra el documento y la línea del tercer registro.</p>
+          <p>Si traes la consulta de Query Manager, explica qué devuelve una fila y qué filtro usarías para compararla con SAP el viernes.</p>
+        </div>
+        <div><h3>Nelson</h3><p>Abre <a href="materiales/clase-3/Clase_3_Validar_SAP.py" download>el notebook de práctica</a> y el archivo <code>sap_nelson.yml</code> junto al notebook. Cambia el límite a siete, guarda y ejecuta. ¿Por qué aparecen siete líneas aunque veas menos documentos?</p>
+          <p>Indica dónde quedaría tu tabla. Sebastián comprueba que cada uno eligió un nombre distinto.</p>
+        </div>
+      </div>
+      <div class="callout"><p>Antes de ejecutar, pon tu nombre en <code>persona</code>. El <a download href="materiales/clase-3/Clase_3_Validar_SAP.py">notebook de práctica</a> prueba el SELECT con doce líneas ficticias. Dejen <code>activo: true</code> para validar la fuente. Editar estas copias no dispara una carga.</p></div>
+      <details><summary>Practicar sin Databricks</summary><p>Abre el YAML de <a download href="materiales/clase-3/sap_sebastian.yml">Sebastián</a> o <a download href="materiales/clase-3/sap_nelson.yml">Nelson</a> en un editor. En el notebook local elige tu nombre en <code>persona</code>. Puedes ejecutar el archivo con Python y PyYAML.</p></details>
+    </section>
+    <section id="errores" data-title="Resolver dos errores">
+      <h2 tabindex="-1">La fuente quedó mal escrita. ¿Dónde está el error?</h2>
+      <div class="split">
+        <div class="panel"><h3>Primer turno · Indentación</h3>
+          <p>Sebastián, agrega un espacio delante de <code>activo</code>. Lee el mensaje del validador y ubica la línea.</p>
+          <details><summary>Comprobar la corrección</summary><p><code>activo</code> debe empezar en la misma columna que <code>nombre</code> y <code>query</code>. Las líneas del SQL quedan más adentro que <code>query</code>. Valida de nuevo.</p></details>
+        </div>
+        <div class="panel"><h3>Segundo turno · Nombre del campo</h3>
+          <p>Nelson, cambia <code>query</code> por <code>consulta</code>. El archivo abre. ¿Qué campo necesita el notebook para leer el SQL?</p>
+          <details><summary>Comprobar la corrección</summary><p>Recupera el nombre <code>query</code>, guarda y comprueba que vuelven a salir siete filas.</p></details>
+        </div>
+      </div>
+    </section>
+    <section id="controles" data-title="Conteo y clave">
+      <h2 tabindex="-1">¿Cómo comprobaríamos que llegó todo?</h2>
+      <div class="split">
+        <div><ol>
+          <li>Anota qué representa una fila y el filtro exacto de la consulta elegida.</li>
+          <li>Cuenta las filas del origen para ese corte. En el piloto, aplica el mismo corte a Bronze y compara.</li>
+          <li>Elige una clave de negocio. Revisa sus vacíos y repeticiones. Si se repite, abre un caso y comprueba si corresponde a dos líneas distintas.</li>
+        </ol></div>
+        <div class="panel"><h3>Qué mostrar al compañero</h3>
+          <dl><div><dt>Origen</dt><dd>Consulta, filtro y conteo del corte.</dd></div>
+          <div><dt>Bronze</dt><dd>Tabla prevista y control que harás en el piloto.</dd></div>
+          <div><dt>Una fila</dt><dd>Clave elegida y columnas que usarás para reconocer esa misma fila.</dd></div></dl>
+        </div>
+      </div>
+    </section>
+    <section id="ejecucion" data-title="Ejecución y trigger">
+      <h2 tabindex="-1">¿Quién puso en marcha la carga?</h2>
+      <p>Abre Jobs &amp; Pipelines con Nicolás. Elijan una ejecución anterior y sigan el rastro hasta la tabla.</p>
+      <div class="split">
+        <div class="panel"><h3>Sebastián · Ejecución</h3><p>Abre la corrida y localiza la hora, el estado y la tarea que leyó SAP. Señala en qué parte buscarías el primer error si fallara.</p></div>
+        <div class="panel"><h3>Nelson · Trigger</h3><p>Revisa el disparador del job. Si tiene horario, indica la frecuencia y la zona horaria que muestra. Si fue manual, ubica dónde se ve en la corrida elegida.</p></div>
+      </div>
+      <div class="callout"><p>Si aparece una sola columna <code>_aviso</code>, abre el detalle de la extracción. El lector de SAP puede guardar un aviso cuando la consulta falla o viene vacía, aunque el pipeline termine.</p></div>
+    </section>
+    <section id="cierre" data-title="Dejar listo el piloto">
+      <h2 tabindex="-1">Lo que nos llevamos para la clase 4</h2>
+      <ol><li>Cada uno abre su YAML corregido y señala el origen, la consulta y su destino Bronze.</li>
+        <li>Muestra el filtro y la clave con que comparará el conteo y una fila cuando se ejecute la carga piloto.</li>
+        <li>Propón una pregunta de negocio para Gold. Acuerden qué columnas de Silver necesitarían para responderla.</li></ol>
+      <details><summary>Una pregunta para partir</summary><p>¿Cuántas líneas de órdenes de compra hay por artículo en el período? Acuerden qué fecha y qué estados debe incluir el piloto antes de calcularlo.</p></details>
+    </section>
+  </main>
+  <footer id="bar" hidden><div class="shell controls">
+    <div class="left"><button id="prev" type="button">← Anterior</button><output id="counter" aria-live="polite"></output><button type="button" id="next">Siguiente →</button></div>
+    <div class="right"><button id="full" type="button" hidden>Pantalla completa</button></div>
+  </div></footer>
+  <script>
+    const slides = Array.from(document.querySelectorAll("main > section"));
+    const jump = document.getElementById("jump");
+    const prev = document.getElementById("prev");
+    const next = document.getElementById("next");
+    const counter = document.getElementById("counter");
+    const full = document.getElementById("full");
+    let current = -1;
+    slides.forEach((slide, i) => jump.add(new Option((i + 1) + ". " + slide.dataset.title, slide.id)));
+    function show() {
+      const found = slides.findIndex(slide => "#" + slide.id === location.hash);
+      const index = Math.max(0, found);
+      const focus = current >= 0 && current !== index;
+      slides.forEach((slide, i) => { slide.hidden = i !== index; });
+      current = index;
+      jump.value = slides[index].id;
+      prev.disabled = index === 0;
+      next.disabled = index === slides.length - 1;
+      counter.textContent = (index + 1) + " / " + slides.length;
+      if (focus) slides[index].querySelector("h1,h2").focus({ preventScroll:true });
+      window.scrollTo(0, 0);
+    }
+    function go(index) {
+      if (index >= 0 && index < slides.length) location.hash = slides[index].id;
+    }
+    prev.addEventListener("click", () => go(current - 1));
+    next.addEventListener("click", () => go(current + 1));
+    jump.addEventListener("change", () => { location.hash = jump.value; });
+    window.addEventListener("hashchange", show);
+    document.addEventListener("keydown", e => {
+      if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || e.target.closest("select,input,textarea,[contenteditable]")) return;
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        e.preventDefault();
+        go(current + (e.key === "ArrowRight" ? 1 : -1));
+      }
+    });
+    if (document.fullscreenEnabled) {
+      full.hidden = false;
+      full.addEventListener("click", async () => {
+        try {
+          if (document.fullscreenElement) await document.exitFullscreen();
+          else await document.documentElement.requestFullscreen();
+        } catch { full.hidden = true; }
+      });
+      document.addEventListener("fullscreenchange", () => { full.textContent = document.fullscreenElement ? "Salir de pantalla completa" : "Pantalla completa"; });
+    }
+    document.getElementById("choose").hidden = false;
+    document.getElementById("bar").hidden = false;
+    show();
+  </script>
+</body>
+</html>
