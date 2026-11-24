@@ -90,8 +90,19 @@
     <section id="inicio" data-title="Objetivo" class="cover">
       <h1 tabindex="-1">Configurar una fuente SAP con YAML</h1>
       <p>Clase 3 · Martes 24 de noviembre</p>
-      <p>Hoy vamos a leer una carga de Perú que ya terminó. Después cada uno probará su consulta, corregirá su YAML y dejará definido el destino Bronze para el piloto del viernes.</p>
+      <p>¿Qué dato descargan de SAP a mano y les gustaría tener en Databricks? Hoy cada uno va a probar una consulta para su caso y dejar un control para el piloto.</p>
       <p class="route"><span>Consulta de SAP</span> → <span>Configuración YAML</span> → <span>Tabla Bronze</span></p>
+      <p><a href="#pauta" style="color:inherit">Ver la pauta de las dos horas</a></p>
+    </section>
+    <section id="pauta" data-title="Pauta de hoy">
+      <h2 tabindex="-1">Pauta de hoy</h2>
+      <dl>
+        <div><dt>11:00–11:15</dt><dd>Cada uno propone un dato que quisiera traer de SAP. Recordamos brevemente el recorrido de Drive a Bronze.</dd></div>
+        <div><dt>11:15–11:40</dt><dd>Leemos el YAML desde cero. Ejecutamos el notebook de SSO y seguimos una línea de SAP.</dd></div>
+        <div><dt>11:40–11:50</dt><dd>Pausa.</dd></div>
+        <div><dt>11:50–12:40</dt><dd>Sebastián y Nelson editan su YAML y prueban una consulta para su caso, 25 minutos cada uno.</dd></div>
+        <div><dt>12:40–13:00</dt><dd>Elegimos el caso del piloto y anotamos el filtro, el destino, el conteo de referencia y una línea para validar.</dd></div>
+      </dl>
     </section>
     <section id="repaso" data-title="Repaso de EERR KAM">
       <h2 tabindex="-1">¿De dónde salió el USD de EERR KAM?</h2>
@@ -106,43 +117,59 @@
         </div>
       </div>
     </section>
+    <section id="que-es-yaml" data-title="Qué es YAML">
+      <h2 tabindex="-1">¿Qué es un YAML?</h2>
+      <div class="split">
+        <div><p>Es un formato de texto para organizar datos. Aquí lo usamos como un formulario de configuración que el notebook lee cada vez que lo ejecutamos.</p>
+          <pre><code>bronze:
+  catalog: capacitacion
+  schema: bronze</code></pre>
+        </div>
+        <div class="panel">
+          <dl>
+            <div><dt>Clave y valor</dt><dd>En <code>schema: bronze</code>, la clave es <code>schema</code> y su valor es <code>bronze</code>.</dd></div>
+            <div><dt>Espacios al inicio</dt><dd><code>catalog</code> y <code>schema</code> están bajo <code>bronze</code>. Alinea los campos del mismo nivel y usa espacios para sangrar.</dd></div>
+            <div><dt>Listas</dt><dd>En <code>sources</code>, cada guion al comienzo de una entrada marca una fuente.</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
     <section id="configuracion" data-title="Leer el YAML">
       <h2 tabindex="-1">¿Qué parte del YAML cambia al agregar una consulta?</h2>
       <div class="split">
-        <div><p>Abre el <a download href="materiales/clase-3/sap_nicolas.yml">YAML de Nicolás</a>. ¿Qué cambiarías para traer otra consulta del mismo sistema?</p>
-          <dl><div><dt><code>sap</code></dt><dd>Indica dónde busca el notebook la conexión a SAP.</dd></div>
-          <div><dt><code>bronze</code></dt><dd>Declara catálogo y esquema. En Settings del pipeline se confirma el destino efectivo.</dd></div>
+        <div><p>Abre el YAML de la demo de SSO. Puedes seguirlo con este <a download href="materiales/clase-3/sap_nicolas.yml">YAML de ejemplo</a>.</p>
+          <dl><div><dt><code>sap</code></dt><dd><code>secret_scope</code> y <code>secret_key</code> indican dónde busca el notebook las credenciales en Databricks.</dd></div>
+          <div><dt><code>bronze</code></dt><dd><code>catalog</code> y <code>schema</code> indican dónde quedaría la tabla.</dd></div>
           <div><dt><code>sources</code></dt><dd>Contiene un bloque por fuente. Cada guion inicia una entrada.</dd></div></dl>
         </div>
         <div class="panel"><h3>Dentro de una fuente</h3>
           <dl><div><dt><code>nombre</code></dt><dd>Define el nombre de la tabla de salida.</dd></div>
-          <div><dt><code>query</code></dt><dd>Contiene el SQL que se ejecuta en SAP HANA. Con <code>&gt;-</code> podemos escribir este SELECT en varias líneas.</dd></div>
-          <div><dt><code>activo</code></dt><dd>Con <code>false</code>, el pipeline omite esa fuente en su ejecución.</dd></div></dl>
+          <div><dt><code>query</code></dt><dd>Contiene el SQL que se ejecuta en SAP HANA. En este SELECT, <code>&gt;</code> pliega las líneas en un texto y <code>-</code> quita el salto final.</dd></div>
+          <div><dt><code>activo</code></dt><dd><code>true</code> es un valor lógico que habilita la fuente en el ejercicio.</dd></div></dl>
         </div>
       </div>
-      <div class="callout"><p>El notebook lee el SQL en HANA y genera una tabla Delta. Muestra en qué catálogo y esquema quedaría tu <code>nombre</code> si se habilitara para el piloto.</p></div>
+      <div class="callout"><p>En la primera celda, el notebook lee el YAML e imprime el SELECT y el destino. <code>FROM</code> indica qué tabla lee en SAP. El destino se arma con <code>catalog</code>, <code>schema</code> y <code>nombre</code>.</p></div>
     </section>
     <section id="precarga" data-title="Abrir la carga de Perú">
       <h2 tabindex="-1">Abramos cinco líneas de órdenes de compra</h2>
-      <p>Nicolás muestra una extracción de SAP Perú ya cargada en Bronze. Este SELECT representa el caso con una fuente de ejemplo.</p>
+      <p>Nicolás ejecuta el notebook de SSO en el clúster de la clase. El SQL de abajo usa nombres de ejemplo. Antes de ejecutar, anticipa cuántas filas devolverá y elige cómo reconocer una línea.</p>
       <pre><code>SELECT "DocNum", "LineNum", "ItemCode"
 FROM "SAP_PERU_DEMO"."LINEAS_OC"
 ORDER BY "DocNum", "LineNum", "ItemCode"
 LIMIT 5</code></pre>
-      <p>Elige una línea. ¿Qué pasaría si usáramos solo el número de documento para identificarla? Cuenta los pares documento–línea distintos en la muestra.</p>
+      <p>Cuando salgan las filas, compara el conteo con tu predicción. Elige un documento y una línea para comprobar el mismo registro en Bronze si se hace la escritura de demostración.</p>
     </section>
     <section id="consulta" data-title="Preparar la consulta">
-      <h2 tabindex="-1">De Query Manager a una fuente de práctica</h2>
+      <h2 tabindex="-1">Prueba algo que uses en tu trabajo</h2>
       <div class="split">
-        <div><h3>Sebastián</h3><p>Abre <a href="materiales/clase-3/Clase_3_Validar_SAP.py" download>el notebook de práctica</a> y el archivo <code>sap_sebastian.yml</code> junto al notebook. Cambia <code>LIMIT 5</code> por <code>LIMIT 3</code>, guarda y vuelve a ejecutar. Muestra el documento y la línea del tercer registro.</p>
-          <p>Si traes la consulta de Query Manager, explica qué devuelve una fila y qué filtro usarías para compararla con SAP el viernes.</p>
+        <div><h3>Sebastián</h3><p>En tu carpeta <code>clase-03</code> de Databricks, abre <code>sap_sebastian.yml</code>. Cambia <code>LIMIT 5</code> a <code>LIMIT 3</code>, guarda y ejecuta tu notebook en el clúster de la clase.</p>
+          <p>Si traes una consulta de Query Manager, muestra qué devuelve y cuál es el filtro que usarías para probarla.</p>
         </div>
-        <div><h3>Nelson</h3><p>Abre <a href="materiales/clase-3/Clase_3_Validar_SAP.py" download>el notebook de práctica</a> y el archivo <code>sap_nelson.yml</code> junto al notebook. Cambia el límite a siete, guarda y ejecuta. ¿Por qué aparecen siete líneas aunque veas menos documentos?</p>
-          <p>Indica dónde quedaría tu tabla. Sebastián comprueba que cada uno eligió un nombre distinto.</p>
+        <div><h3>Nelson</h3><p>En tu carpeta <code>clase-03</code>, abre <code>sap_nelson.yml</code>. Cambia el límite a siete, guarda y ejecuta. Compara las filas y explica de dónde sale el nombre de la tabla prevista.</p>
         </div>
       </div>
-      <div class="callout"><p>Antes de ejecutar, pon tu nombre en <code>persona</code>. El <a download href="materiales/clase-3/Clase_3_Validar_SAP.py">notebook de práctica</a> prueba el SELECT con doce líneas ficticias. Dejen <code>activo: true</code> para validar la fuente. Editar estas copias no dispara una carga.</p></div>
-      <details><summary>Practicar sin Databricks</summary><p>Abre el YAML de <a download href="materiales/clase-3/sap_sebastian.yml">Sebastián</a> o <a download href="materiales/clase-3/sap_nelson.yml">Nelson</a> en un editor. En el notebook local elige tu nombre en <code>persona</code>. Puedes ejecutar el archivo con Python y PyYAML.</p></details>
+      <div class="callout"><p>Para partir de la muestra, elige un <code>DocNum</code> de las filas y agrega <code>WHERE "DocNum" = …</code> antes del <code>ORDER BY</code>. Cambia los puntos por el número y comprueba que todas las líneas pertenecen a esa orden.</p></div>
+      <details><summary>Descargar el ejercicio con datos ficticios</summary><p>Guarda el <a download href="materiales/clase-3/Clase_3_Validar_SAP.py">notebook de ejemplo</a> junto al YAML de <a download href="materiales/clase-3/sap_sebastian.yml">Sebastián</a> o <a download href="materiales/clase-3/sap_nelson.yml">Nelson</a>. Elige tu nombre en <code>persona</code> y ejecútalo con Python y PyYAML.</p></details>
     </section>
     <section id="errores" data-title="Resolver dos errores">
       <h2 tabindex="-1">La fuente quedó mal escrita. ¿Dónde está el error?</h2>
@@ -245,3 +272,4 @@ LIMIT 5</code></pre>
   </script>
 </body>
 </html>
+
