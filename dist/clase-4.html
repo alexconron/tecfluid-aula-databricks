@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Clase 4 del curso de Databricks de Tecfluid. Un flujo desde Google Drive y otro desde SAP se unen en Gold.">
+  <title>Clase 4 · Dos fuentes, una tabla Gold | Tecfluid</title>
+  <link rel="stylesheet" href="style.css?v=2">
+  <style>
+    .branches { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .branch { padding: 1rem 1.25rem; border: 1px solid var(--line); border-radius: .75rem; background: #fff; }
+    .branch h3 { color: var(--violet); }
+    .branch ol { padding-left: 1.25rem; margin: .6rem 0 0; }
+    .branch li + li { margin-top: .5rem; }
+    .merge { margin: 1rem 0 0; padding: .8rem 1.15rem; border-left: .3rem solid var(--violet); background: var(--lavender); }
+    .agenda { padding-left: 1.25rem; margin: .75rem 0 0; }
+    .agenda li + li { margin-top: .65rem; }
+    .reporte th:first-child { width: auto; }
+    @media (max-width: 650px) { .branches { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <p class="brand">Tecfluid <span>· Backspace by Apiux</span></p>
+      <h1>Dos fuentes, una tabla Gold</h1>
+      <p>Clase 4 · Viernes 27 de noviembre · 11:00–13:00, hora de Santiago</p>
+      <nav aria-label="Curso y secciones de la clase">
+        <a href="index.html#clase-4">Volver al curso</a>
+        <a href="#flujos">Los dos flujos</a>
+        <a href="#gold">Cruce en Gold</a>
+        <a href="#demostracion">Demostración</a>
+      </nav>
+    </div>
+  </header>
+  <main class="wrap">
+    <section id="flujos" aria-labelledby="titulo-flujos">
+      <h2 id="titulo-flujos">¿Cuánto presupuestamos y cuánto realizamos?</h2>
+      <p>El presupuesto de notas de venta viene de Google Sheets. El realizado se consulta en SAP. Cada flujo tiene su propio YAML y prepara su resultado por año, mes y KAM.</p>
+      <div class="branches">
+        <article class="branch" aria-labelledby="titulo-drive">
+          <h3 id="titulo-drive">Google Drive</h3>
+          <ol>
+            <li><strong>Landing.</strong> El YAML indica qué libro descargar y en qué volumen guardar el Excel.</li>
+            <li><strong>Bronze.</strong> Se abre la pestaña de presupuesto desde el Excel y se cargan sus campos a Delta.</li>
+            <li><strong>Silver.</strong> Se valida el corte, se normaliza el KAM y se resume el presupuesto.</li>
+          </ol>
+        </article>
+        <article class="branch" aria-labelledby="titulo-sap">
+          <h3 id="titulo-sap">SAP</h3>
+          <ol>
+            <li><strong>Bronze.</strong> Se ejecuta el SELECT del YAML directamente en SAP y se guarda el corte en Delta.</li>
+            <li><strong>Silver.</strong> Se normaliza el KAM y se suman las notas de venta del período.</li>
+          </ol>
+        </article>
+      </div>
+      <p class="merge"><strong>Gold espera a las dos Silver.</strong> La descarga de Drive y la consulta de SAP pueden iniciar en paralelo.</p>
+    </section>
+    <section id="gold" aria-labelledby="titulo-gold">
+      <h2 id="titulo-gold">Cruzar por año, mes y KAM</h2>
+      <p>Cada Silver entrega una fila por clave. Gold conserva los KAM de ambas fuentes y calcula realizado menos presupuesto cuando están los dos importes.</p>
+      <div class="table-scroll" role="region" aria-label="Ejemplo ficticio del resultado de Gold" tabindex="0">
+        <table class="reporte">
+          <caption>Ejemplo ficticio para octubre de 2026</caption>
+          <thead><tr><th scope="col">KAM</th><th scope="col">Presupuesto (USD)</th><th scope="col">Realizado (USD)</th><th scope="col">Diferencia (USD)</th><th scope="col">Estado</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">KAM A</th><td>100.000</td><td>85.000</td><td>−15.000</td><td>Ambas fuentes</td></tr>
+            <tr><th scope="row">KAM B</th><td>60.000</td><td>—</td><td>—</td><td>Solo Drive</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section id="demostracion" aria-labelledby="titulo-demostracion">
+      <h2 id="titulo-demostracion">Orden de la demostración</h2>
+      <ol class="agenda">
+        <li><strong>11:00–11:15.</strong> Revisar el gráfico del job e identificar dónde comienza cada fuente.</li>
+        <li><strong>11:15–11:45.</strong> Seguir el presupuesto desde el YAML de Drive hasta Silver.</li>
+        <li><strong>11:45–11:55.</strong> Pausa.</li>
+        <li><strong>11:55–12:20.</strong> Seguir las notas de venta desde el YAML de SAP hasta Silver.</li>
+        <li><strong>12:20–12:45.</strong> Seguir un KAM desde las dos Silver y comprobar la diferencia en Gold.</li>
+        <li><strong>12:45–13:00.</strong> Revisar las dependencias en Jobs &amp; Pipelines y dónde buscar un error en una corrida.</li>
+      </ol>
+    </section>
+  </main>
+  <footer class="wrap">Material de apoyo para Tecfluid</footer>
+</body>
+</html>
